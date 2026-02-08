@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Question - SAT Diagnostic</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Question #{{ question.id }}</h1>
+        <p><a href="/admin" style="color: #555; font-size: 0.9rem;">Back to Admin Dashboard</a></p>
+
+        <form method="POST" action="/admin/edit-question/{{ question.id }}">
+            <div class="form-group">
+                <label>Question Text</label>
+                <textarea name="question_text" required>{{ question.question_text }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Option A</label>
+                <input type="text" name="option_a" value="{{ question.option_a }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Option B</label>
+                <input type="text" name="option_b" value="{{ question.option_b }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Option C</label>
+                <input type="text" name="option_c" value="{{ question.option_c }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Option D</label>
+                <input type="text" name="option_d" value="{{ question.option_d }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Correct Answer (A, B, C, or D)</label>
+                <select name="correct_answer" required>
+                    <option value="A" {% if question.correct_answer == 'A' %}selected{% endif %}>A</option>
+                    <option value="B" {% if question.correct_answer == 'B' %}selected{% endif %}>B</option>
+                    <option value="C" {% if question.correct_answer == 'C' %}selected{% endif %}>C</option>
+                    <option value="D" {% if question.correct_answer == 'D' %}selected{% endif %}>D</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Concept</label>
+                <input type="text" name="concept" value="{{ question.concept }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Difficulty</label>
+                <select name="difficulty" required>
+                    <option value="easy" {% if question.difficulty == 'easy' %}selected{% endif %}>Easy</option>
+                    <option value="medium" {% if question.difficulty == 'medium' %}selected{% endif %}>Medium</option>
+                    <option value="hard" {% if question.difficulty == 'hard' %}selected{% endif %}>Hard</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Ideal Time (seconds)</label>
+                <input type="number" name="ideal_time_seconds" value="{{ question.ideal_time_seconds }}" required min="10" max="600">
+            </div>
+
+            <div class="form-group">
+                <label>Trap Type (optional)</label>
+                <input type="text" name="trap_type" value="{{ question.trap_type or '' }}" placeholder="e.g., sign_error, unit_conversion">
+            </div>
+
+            <div class="form-group">
+                <label>Numeric Answer (optional)</label>
+                <input type="number" step="any" name="numeric_answer" value="{{ question.numeric_answer if question.numeric_answer is not none else '' }}" placeholder="e.g., 42.5">
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top: 10px;">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SAT Diagnostic</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #1a1a1a;
+        }
+        .admin-header h1 { margin-bottom: 0; }
+        .stats-row {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .stat-card .stat-num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #888;
+            margin-top: 4px;
+        }
+        .questions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        .questions-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #888;
+            padding: 10px 12px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .questions-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+            color: #333;
+            vertical-align: top;
+        }
+        .questions-table tr:hover { background: #fafafa; }
+        .q-text-cell {
+            max-width: 320px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 2px;
+        }
+        .badge-easy { background: #e8f5e9; color: #2e7d32; }
+        .badge-medium { background: #fff3e0; color: #e65100; }
+        .badge-hard { background: #fce4ec; color: #c62828; }
+        .actions { display: flex; gap: 8px; }
+        .btn-small {
+            padding: 6px 14px;
+            font-size: 0.78rem;
+            font-family: 'Georgia', serif;
+            border: 1px solid #d0d0d0;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .btn-small:hover { border-color: #1a1a1a; background: #f5f5f5; }
+        .btn-small.delete {
+            border-color: #c62828;
+            color: #c62828;
+        }
+        .btn-small.delete:hover { background: #fce4ec; }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .section-header h2 { border: none; margin: 0; padding: 0; }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        @media (max-width: 768px) {
+            .stats-row { flex-direction: column; gap: 12px; }
+            .questions-table { font-size: 0.85rem; }
+            .q-text-cell { max-width: 180px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-wide">
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <a href="/" class="btn-small">View Site</a>
+        </div>
+
+        {% if request.query_params.get('success') == 'added' %}
+        <div class="success-msg">Question added successfully.</div>
+        {% elif request.query_params.get('success') == 'updated' %}
+        <div class="success-msg">Question updated successfully.</div>
+        {% elif request.query_params.get('success') == 'deleted' %}
+        <div class="success-msg">Question deleted successfully.</div>
+        {% endif %}
+        {% if request.query_params.get('error') == 'not_found' %}
+        <div class="success-msg" style="background:#fce4ec; border-color:#c62828; color:#c62828;">Question not found.</div>
+        {% endif %}
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num">{{ total_questions }}</div>
+                <div class="stat-label">Questions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">{{ total_attempts }}</div>
+                <div class="stat-label">Test Attempts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">{{ total_users }}</div>
+                <div class="stat-label">Users</div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Question Bank</h2>
+            <a href="/admin/add-question" class="btn-primary" style="padding: 10px 24px; font-size: 0.85rem;">Add Question</a>
+        </div>
+
+        {% if questions|length > 0 %}
+        <table class="questions-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Question</th>
+                    <th>Answer</th>
+                    <th>Concept</th>
+                    <th>Difficulty</th>
+                    <th>Time</th>
+                    <th>Trap</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for q in questions %}
+                <tr>
+                    <td>{{ q.id }}</td>
+                    <td class="q-text-cell" title="{{ q.question_text }}">{{ q.question_text }}</td>
+                    <td><strong>{{ q.correct_answer }}</strong></td>
+                    <td>{{ q.concept }}</td>
+                    <td>
+                        <span class="badge badge-{{ q.difficulty }}">{{ q.difficulty }}</span>
+                    </td>
+                    <td>{{ q.ideal_time_seconds }}s</td>
+                    <td>{{ q.trap_type or '—' }}</td>
+                    <td class="actions">
+                        <a href="/admin/edit-question/{{ q.id }}" class="btn-small">Edit</a>
+                        <form method="POST" action="/admin/delete-question/{{ q.id }}" style="margin:0;" onsubmit="return confirm('Delete this question?');">
+                            <button type="submit" class="btn-small delete">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>No questions yet. Click "Add Question" to get started.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

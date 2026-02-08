@@ -239,14 +239,31 @@ async def report_status(attempt_id: int, db: AsyncSession = Depends(get_db)):
     })
 
 
-@app.get("/add-question", response_class=HTMLResponse)
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_dashboard(request: Request, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Question).order_by(Question.id.desc()))
+    questions_list = result.scalars().all()
+    attempts_result = await db.execute(select(func.count(TestAttempt.id)))
+    total_attempts = attempts_result.scalar() or 0
+    users_result = await db.execute(select(func.count(User.id)))
+    total_users = users_result.scalar() or 0
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "questions": questions_list,
+        "total_questions": len(questions_list),
+        "total_attempts": total_attempts,
+        "total_users": total_users,
+    }, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+
+
+@app.get("/admin/add-question", response_class=HTMLResponse)
 async def add_question_form(request: Request):
     return templates.TemplateResponse("add_question.html", {
         "request": request,
     }, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
 
-@app.post("/add-question")
+@app.post("/admin/add-question")
 async def add_question(
     request: Request,
     question_text: str = Form(...),
@@ -277,7 +294,62 @@ async def add_question(
     )
     db.add(q)
     await db.commit()
-    return RedirectResponse(url="/add-question?success=1", status_code=303)
+    return RedirectResponse(url="/admin?success=added", status_code=303)
+
+
+@app.get("/admin/edit-question/{question_id}", response_class=HTMLResponse)
+async def edit_question_form(request: Request, question_id: int, db: AsyncSession = Depends(get_db)):
+    q = await db.get(Question, question_id)
+    if not q:
+        return RedirectResponse(url="/admin?error=not_found", status_code=303)
+    return templates.TemplateResponse("edit_question.html", {
+        "request": request,
+        "question": q,
+    }, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+
+
+@app.post("/admin/edit-question/{question_id}")
+async def edit_question(
+    request: Request,
+    question_id: int,
+    question_text: str = Form(...),
+    option_a: str = Form(...),
+    option_b: str = Form(...),
+    option_c: str = Form(...),
+    option_d: str = Form(...),
+    correct_answer: str = Form(...),
+    concept: str = Form(...),
+    difficulty: str = Form(...),
+    ideal_time_seconds: int = Form(...),
+    trap_type: str = Form(None),
+    numeric_answer: float = Form(None),
+    db: AsyncSession = Depends(get_db),
+):
+    q = await db.get(Question, question_id)
+    if not q:
+        return RedirectResponse(url="/admin?error=not_found", status_code=303)
+    q.question_text = question_text
+    q.option_a = option_a
+    q.option_b = option_b
+    q.option_c = option_c
+    q.option_d = option_d
+    q.correct_answer = correct_answer.upper()
+    q.concept = concept
+    q.difficulty = difficulty
+    q.ideal_time_seconds = ideal_time_seconds
+    q.trap_type = trap_type if trap_type else None
+    q.numeric_answer = numeric_answer
+    await db.commit()
+    return RedirectResponse(url="/admin?success=updated", status_code=303)
+
+
+@app.post("/admin/delete-question/{question_id}")
+async def delete_question(question_id: int, db: AsyncSession = Depends(get_db)):
+    q = await db.get(Question, question_id)
+    if q:
+        await db.delete(q)
+        await db.commit()
+    return RedirectResponse(url="/admin?success=deleted", status_code=303)
 
 
 @app.get("/api/questions/count")

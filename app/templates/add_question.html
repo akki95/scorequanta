@@ -9,13 +9,13 @@
 <body>
     <div class="container">
         <h1>Add Question</h1>
-        <p><a href="/" style="color: #555; font-size: 0.9rem;">Back to Home</a></p>
+        <p><a href="/admin" style="color: #555; font-size: 0.9rem;">Back to Admin Dashboard</a></p>
 
         {% if request.query_params.get('success') %}
         <div class="success-msg">Question added successfully.</div>
         {% endif %}
 
-        <form method="POST" action="/add-question">
+        <form method="POST" action="/admin/add-question">
             <div class="form-group">
                 <label>Question Text</label>
                 <textarea name="question_text" required></textarea>
