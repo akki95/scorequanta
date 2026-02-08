@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Question - SAT Diagnostic</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Add Question</h1>
+        <p><a href="/" style="color: #555; font-size: 0.9rem;">Back to Home</a></p>
+
+        {% if request.query_params.get('success') %}
+        <div class="success-msg">Question added successfully.</div>
+        {% endif %}
+
+        <form method="POST" action="/add-question">
+            <div class="form-group">
+                <label>Question Text</label>
+                <textarea name="question_text" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Option A</label>
+                <input type="text" name="option_a" required>
+            </div>
+
+            <div class="form-group">
+                <label>Option B</label>
+                <input type="text" name="option_b" required>
+            </div>
+
+            <div class="form-group">
+                <label>Option C</label>
+                <input type="text" name="option_c" required>
+            </div>
+
+            <div class="form-group">
+                <label>Option D</label>
+                <input type="text" name="option_d" required>
+            </div>
+
+            <div class="form-group">
+                <label>Correct Answer (A, B, C, or D)</label>
+                <select name="correct_answer" required>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Concept (e.g., algebra, geometry, statistics)</label>
+                <input type="text" name="concept" required>
+            </div>
+
+            <div class="form-group">
+                <label>Difficulty</label>
+                <select name="difficulty" required>
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Ideal Time (seconds)</label>
+                <input type="number" name="ideal_time_seconds" value="90" required min="10" max="600">
+            </div>
+
+            <div class="form-group">
+                <label>Trap Type (optional)</label>
+                <input type="text" name="trap_type" placeholder="e.g., sign_error, unit_conversion, off_by_one">
+            </div>
+
+            <div class="form-group">
+                <label>Numeric Answer (optional, for precision detection)</label>
+                <input type="number" step="any" name="numeric_answer" placeholder="e.g., 42.5">
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top: 10px;">Add Question</button>
+        </form>
+    </div>
+</body>
+</html>

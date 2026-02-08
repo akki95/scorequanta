@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAT Math Diagnostic - Test</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="timer-bar">
+        <span class="progress-text" id="progressText">Question 1 of {{ question_count }}</span>
+        <span class="time" id="timerDisplay">15:00</span>
+    </div>
+
+    <div class="container question-container" id="testContainer">
+    </div>
+
+    <div class="container" id="submittingScreen" style="display:none;">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your performance...</p>
+        </div>
+    </div>
+
+    <div class="container" id="emailGateScreen" style="display:none;">
+        <div class="score-summary">
+            <div class="score-big" id="scoreDisplay">--</div>
+            <div class="score-label">Questions Correct</div>
+        </div>
+        <div class="email-gate">
+            <h2>Your SAT Intelligence Report is Ready</h2>
+            <p>Enter your email to unlock your personalized diagnostic report.</p>
+            <input type="email" class="email-input" id="emailInput" placeholder="you@email.com">
+            <br>
+            <button class="btn-primary" id="unlockBtn" onclick="unlockReport()">Unlock Report</button>
+        </div>
+    </div>
+
+    <div class="container-wide" id="reportScreen" style="display:none;">
+        <div class="score-summary">
+            <div class="score-big" id="finalScoreDisplay">--</div>
+            <div class="score-label">Questions Correct out of {{ question_count }}</div>
+        </div>
+        <div id="reportContent"></div>
+    </div>
+
+    <script>
+        const questions = {{ questions | safe }};
+        const attemptId = {{ attempt_id }};
+        const TOTAL_TIME = 15 * 60;
+        let timeRemaining = TOTAL_TIME;
+        let currentQuestion = 0;
+        let timerInterval;
+        let questionStartTime;
+        let firstInteractionTime = null;
+
+        const answers = questions.map(q => ({
+            question_id: q.id,
+            selected_answer: null,
+            confidence_level: "medium",
+            time_taken_seconds: 0,
+            start_delay_seconds: 0,
+            answer_changed: false,
+            change_direction: "none",
+            first_answer: null,
+            numeric_input: null,
+        }));
+
+        function init() {
+            if (questions.length === 0) {
+                document.getElementById('testContainer').innerHTML = '<div class="no-questions-warning"><p>No questions available. <a href="/add-question">Add questions</a> first.</p></div>';
+                return;
+            }
+            renderQuestions();
+            startTimer();
+            showQuestion(0);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('testContainer');
+            let html = '';
+            questions.forEach((q, idx) => {
+                const numericHtml = q.has_numeric ? `
+                    <div class="form-group" style="margin-top:12px; margin-bottom:16px;">
+                        <label style="font-size:0.8rem; color:#888; text-transform:uppercase; letter-spacing:0.08em;">Your Numeric Answer (optional)</label>
+                        <input type="number" step="any" class="email-input" style="max-width:200px;" data-q="${idx}" onchange="setNumeric(${idx}, this.value)" placeholder="e.g. 42.5">
+                    </div>` : '';
+                html += `
+                <div class="question-card" id="q${idx}">
+                    <div class="question-number">Question ${idx + 1} of ${questions.length}</div>
+                    <div class="question-text">${q.question_text}</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-q="${idx}" data-opt="A" onclick="selectOption(${idx}, 'A', this)">A. ${q.option_a}</button>
+                        <button class="option-btn" data-q="${idx}" data-opt="B" onclick="selectOption(${idx}, 'B', this)">B. ${q.option_b}</button>
+                        <button class="option-btn" data-q="${idx}" data-opt="C" onclick="selectOption(${idx}, 'C', this)">C. ${q.option_c}</button>
+                        <button class="option-btn" data-q="${idx}" data-opt="D" onclick="selectOption(${idx}, 'D', this)">D. ${q.option_d}</button>
+                    </div>
+                    ${numericHtml}
+                    <div class="confidence-selector">
+                        <label>Confidence Level</label>
+                        <div class="confidence-options">
+                            <button class="confidence-btn" data-q="${idx}" data-conf="low" onclick="setConfidence(${idx}, 'low', this)">Low</button>
+                            <button class="confidence-btn selected" data-q="${idx}" data-conf="medium" onclick="setConfidence(${idx}, 'medium', this)">Medium</button>
+                            <button class="confidence-btn" data-q="${idx}" data-conf="high" onclick="setConfidence(${idx}, 'high', this)">High</button>
+                        </div>
+                    </div>
+                    <div class="nav-buttons">
+                        ${idx > 0 ? `<button class="btn-nav" onclick="prevQuestion()">Previous</button>` : '<div></div>'}
+                        ${idx < questions.length - 1
+                            ? `<button class="btn-nav" onclick="nextQuestion()">Next</button>`
+                            : `<button class="btn-submit" onclick="submitTest()">Submit Test</button>`
+                        }
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function setNumeric(qIdx, value) {
+            recordInteraction();
+            answers[qIdx].numeric_input = value ? parseFloat(value) : null;
+        }
+
+        function showQuestion(idx) {
+            document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(`q${idx}`).classList.add('active');
+            currentQuestion = idx;
+            questionStartTime = Date.now();
+            firstInteractionTime = null;
+            document.getElementById('progressText').textContent = `Question ${idx + 1} of ${questions.length}`;
+        }
+
+        function recordInteraction() {
+            if (!firstInteractionTime) {
+                firstInteractionTime = Date.now();
+                answers[currentQuestion].start_delay_seconds = Math.round((firstInteractionTime - questionStartTime) / 1000 * 100) / 100;
+            }
+        }
+
+        function selectOption(qIdx, opt, btn) {
+            recordInteraction();
+            const prev = answers[qIdx].selected_answer;
+            if (prev && prev !== opt) {
+                answers[qIdx].answer_changed = true;
+                if (!answers[qIdx].first_answer) {
+                    answers[qIdx].first_answer = prev;
+                }
+            }
+            answers[qIdx].selected_answer = opt;
+
+            document.querySelectorAll(`.option-btn[data-q="${qIdx}"]`).forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function setConfidence(qIdx, level, btn) {
+            recordInteraction();
+            answers[qIdx].confidence_level = level;
+            document.querySelectorAll(`.confidence-btn[data-q="${qIdx}"]`).forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function nextQuestion() {
+            answers[currentQuestion].time_taken_seconds += Math.round((Date.now() - questionStartTime) / 1000 * 100) / 100;
+            if (currentQuestion < questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function prevQuestion() {
+            answers[currentQuestion].time_taken_seconds += Math.round((Date.now() - questionStartTime) / 1000 * 100) / 100;
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                const mins = Math.floor(timeRemaining / 60);
+                const secs = timeRemaining % 60;
+                const display = document.getElementById('timerDisplay');
+                display.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                if (timeRemaining <= 120) {
+                    display.classList.add('warning');
+                }
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        async function submitTest() {
+            clearInterval(timerInterval);
+            answers[currentQuestion].time_taken_seconds += Math.round((Date.now() - questionStartTime) / 1000 * 100) / 100;
+
+            document.getElementById('testContainer').style.display = 'none';
+            document.querySelector('.timer-bar').style.display = 'none';
+            document.getElementById('submittingScreen').style.display = 'block';
+
+            const payload = answers.map(a => ({
+                question_id: a.question_id,
+                selected_answer: a.selected_answer,
+                confidence_level: a.confidence_level,
+                time_taken_seconds: a.time_taken_seconds,
+                start_delay_seconds: a.start_delay_seconds,
+                answer_changed: a.answer_changed,
+                first_answer: a.first_answer,
+                numeric_input: a.numeric_input,
+            }));
+
+            try {
+                const resp = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ attempt_id: attemptId, answers: payload }),
+                });
+                const data = await resp.json();
+                document.getElementById('scoreDisplay').textContent = `${data.score} / ${data.total}`;
+                document.getElementById('submittingScreen').style.display = 'none';
+                document.getElementById('emailGateScreen').style.display = 'block';
+            } catch (err) {
+                document.getElementById('submittingScreen').innerHTML = '<div class="loading"><p>Something went wrong. Please try again.</p></div>';
+            }
+        }
+
+        async function unlockReport() {
+            const email = document.getElementById('emailInput').value.trim();
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            document.getElementById('unlockBtn').disabled = true;
+            document.getElementById('unlockBtn').textContent = 'Loading...';
+
+            try {
+                const resp = await fetch('/api/unlock-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, attempt_id: attemptId }),
+                });
+                const data = await resp.json();
+
+                if (data.report_ready && data.report) {
+                    showReport(data.score, data.report);
+                } else {
+                    document.getElementById('emailGateScreen').style.display = 'none';
+                    document.getElementById('submittingScreen').style.display = 'block';
+                    document.getElementById('submittingScreen').innerHTML = '<div class="loading"><div class="spinner"></div><p>Generating your intelligence report...</p></div>';
+                    pollForReport(data.score);
+                }
+            } catch (err) {
+                alert('Something went wrong. Please try again.');
+                document.getElementById('unlockBtn').disabled = false;
+                document.getElementById('unlockBtn').textContent = 'Unlock Report';
+            }
+        }
+
+        function showReport(score, reportHtml) {
+            document.getElementById('finalScoreDisplay').textContent = `${score} / ${questions.length}`;
+            document.getElementById('reportContent').innerHTML = reportHtml;
+            document.getElementById('emailGateScreen').style.display = 'none';
+            document.getElementById('submittingScreen').style.display = 'none';
+            document.getElementById('reportScreen').style.display = 'block';
+        }
+
+        async function pollForReport(score) {
+            let attempts = 0;
+            const maxAttempts = 60;
+            const pollInterval = setInterval(async () => {
+                attempts++;
+                try {
+                    const resp = await fetch(`/api/report-status/${attemptId}`);
+                    const data = await resp.json();
+                    if (data.ready && data.report) {
+                        clearInterval(pollInterval);
+                        showReport(data.score || score, data.report);
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(pollInterval);
+                        showReport(score, '<div class="report-section"><h2>Report Timeout</h2><p>Report generation is taking longer than expected. Please refresh the page to check again.</p></div>');
+                    }
+                } catch (e) {
+                    if (attempts >= maxAttempts) {
+                        clearInterval(pollInterval);
+                        showReport(score, '<div class="report-section"><h2>Error</h2><p>Could not load your report. Please try again later.</p></div>');
+                    }
+                }
+            }, 2000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
