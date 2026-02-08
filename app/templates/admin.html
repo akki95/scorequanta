@@ -119,7 +119,10 @@
     <div class="container-wide">
         <div class="admin-header">
             <h1>Admin Dashboard</h1>
-            <a href="/" class="btn-small">View Site</a>
+            <div style="display:flex; gap:10px;">
+                <a href="/" class="btn-small">View Site</a>
+                <a href="/admin/logout" class="btn-small delete">Logout</a>
+            </div>
         </div>
 
         {% if request.query_params.get('success') == 'added' %}

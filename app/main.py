@@ -1,7 +1,10 @@
 import asyncio
 import json
+import os
 import random
-from fastapi import FastAPI, Request, Depends, Form
+import hashlib
+import secrets
+from fastapi import FastAPI, Request, Depends, Form, Cookie
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -15,6 +18,23 @@ from app.ai_report import generate_diagnostic_report
 app = FastAPI(title="SAT Math Diagnostic")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
+
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
+ADMIN_TOKEN_SECRET = os.environ.get("SESSION_SECRET", "fallback-secret-key")
+
+
+def generate_admin_token():
+    raw = f"{ADMIN_TOKEN_SECRET}:{secrets.token_hex(16)}"
+    return hashlib.sha256(raw.encode()).hexdigest()
+
+
+admin_tokens: set[str] = set()
+
+
+def verify_admin(token: str | None) -> bool:
+    if not token:
+        return False
+    return token in admin_tokens
 
 
 @app.on_event("startup")
@@ -239,8 +259,45 @@ async def report_status(attempt_id: int, db: AsyncSession = Depends(get_db)):
     })
 
 
+@app.get("/admin/login", response_class=HTMLResponse)
+async def admin_login_page(request: Request):
+    return templates.TemplateResponse("admin_login.html", {
+        "request": request,
+    }, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+
+
+@app.post("/admin/login")
+async def admin_login(request: Request, password: str = Form(...)):
+    if not ADMIN_PASSWORD:
+        return templates.TemplateResponse("admin_login.html", {
+            "request": request,
+            "error": "Admin password not configured. Set the ADMIN_PASSWORD secret.",
+        })
+    if password != ADMIN_PASSWORD:
+        return templates.TemplateResponse("admin_login.html", {
+            "request": request,
+            "error": "Incorrect password.",
+        })
+    token = generate_admin_token()
+    admin_tokens.add(token)
+    response = RedirectResponse(url="/admin", status_code=303)
+    response.set_cookie(key="admin_token", value=token, httponly=True, samesite="lax", max_age=86400)
+    return response
+
+
+@app.get("/admin/logout")
+async def admin_logout(request: Request, admin_token: str | None = Cookie(None)):
+    if admin_token:
+        admin_tokens.discard(admin_token)
+    response = RedirectResponse(url="/admin/login", status_code=303)
+    response.delete_cookie("admin_token")
+    return response
+
+
 @app.get("/admin", response_class=HTMLResponse)
-async def admin_dashboard(request: Request, db: AsyncSession = Depends(get_db)):
+async def admin_dashboard(request: Request, admin_token: str | None = Cookie(None), db: AsyncSession = Depends(get_db)):
+    if not verify_admin(admin_token):
+        return RedirectResponse(url="/admin/login", status_code=303)
     result = await db.execute(select(Question).order_by(Question.id.desc()))
     questions_list = result.scalars().all()
     attempts_result = await db.execute(select(func.count(TestAttempt.id)))
@@ -257,7 +314,9 @@ async def admin_dashboard(request: Request, db: AsyncSession = Depends(get_db)):
 
 
 @app.get("/admin/add-question", response_class=HTMLResponse)
-async def add_question_form(request: Request):
+async def add_question_form(request: Request, admin_token: str | None = Cookie(None)):
+    if not verify_admin(admin_token):
+        return RedirectResponse(url="/admin/login", status_code=303)
     return templates.TemplateResponse("add_question.html", {
         "request": request,
     }, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
@@ -277,8 +336,11 @@ async def add_question(
     ideal_time_seconds: int = Form(...),
     trap_type: str = Form(None),
     numeric_answer: float = Form(None),
+    admin_token: str | None = Cookie(None),
     db: AsyncSession = Depends(get_db),
 ):
+    if not verify_admin(admin_token):
+        return RedirectResponse(url="/admin/login", status_code=303)
     q = Question(
         question_text=question_text,
         option_a=option_a,
@@ -298,7 +360,9 @@ async def add_question(
 
 
 @app.get("/admin/edit-question/{question_id}", response_class=HTMLResponse)
-async def edit_question_form(request: Request, question_id: int, db: AsyncSession = Depends(get_db)):
+async def edit_question_form(request: Request, question_id: int, admin_token: str | None = Cookie(None), db: AsyncSession = Depends(get_db)):
+    if not verify_admin(admin_token):
+        return RedirectResponse(url="/admin/login", status_code=303)
     q = await db.get(Question, question_id)
     if not q:
         return RedirectResponse(url="/admin?error=not_found", status_code=303)
@@ -323,8 +387,11 @@ async def edit_question(
     ideal_time_seconds: int = Form(...),
     trap_type: str = Form(None),
     numeric_answer: float = Form(None),
+    admin_token: str | None = Cookie(None),
     db: AsyncSession = Depends(get_db),
 ):
+    if not verify_admin(admin_token):
+        return RedirectResponse(url="/admin/login", status_code=303)
     q = await db.get(Question, question_id)
     if not q:
         return RedirectResponse(url="/admin?error=not_found", status_code=303)
@@ -344,7 +411,9 @@ async def edit_question(
 
 
 @app.post("/admin/delete-question/{question_id}")
-async def delete_question(question_id: int, db: AsyncSession = Depends(get_db)):
+async def delete_question(question_id: int, admin_token: str | None = Cookie(None), db: AsyncSession = Depends(get_db)):
+    if not verify_admin(admin_token):
+        return RedirectResponse(url="/admin/login", status_code=303)
     q = await db.get(Question, question_id)
     if q:
         await db.delete(q)

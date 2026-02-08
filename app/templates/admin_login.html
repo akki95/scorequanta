@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - SAT Diagnostic</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="landing-page" style="min-height: 60vh;">
+            <h1 style="font-size: 1.8rem;">Admin Login</h1>
+            <p class="subtitle" style="margin-bottom: 24px;">Enter your admin password to continue.</p>
+
+            {% if error %}
+            <div class="success-msg" style="background:#fce4ec; border-color:#c62828; color:#c62828; margin-bottom: 24px; max-width: 400px;">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="/admin/login" style="width: 100%; max-width: 400px; text-align: center;">
+                <input type="password" name="password" class="email-input" placeholder="Password" required autofocus style="margin-bottom: 16px;">
+                <br>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+
+            <p style="margin-top: 32px;"><a href="/" style="color: #888; font-size: 0.85rem;">Back to Home</a></p>
+        </div>
+    </div>
+</body>
+</html>
