@@ -1,0 +1,311 @@
+Build a production-style but lightweight SAT Quant Diagnostic Web App designed to predict SAT Math scores using behavioral and performance analytics — not just correctness.
+
+PRIMARY GOAL:
+Create a fast, authoritative 15-minute diagnostic that identifies score ceilings and the fastest path to +100 points.
+
+CORE PRINCIPLES:
+- Zero login friction
+- High signal measurement
+- Simple architecture
+- Extremely reliable
+- Data-first design
+- One AI call only after test completion
+- Optimized for speed and clarity, NOT visual flash
+
+-------------------------------------
+
+TECH STACK:
+
+Backend:
+- Python FastAPI
+- Async endpoints
+
+Database:
+- Prefer PostgreSQL via Supabase if available.
+- Otherwise use SQLite but structure models so migration is easy.
+
+Frontend:
+- Jinja2 templates
+- Minimal professional CSS
+- Vanilla JavaScript (no React)
+
+AI:
+- Single async OpenAI call after test submission.
+
+-------------------------------------
+
+APP FLOW:
+
+Landing Page:
+Headline: "15-Minute SAT Math Intelligence Test"
+Subtext: "Predict your SAT score. Discover the fastest path to +100 points."
+
+Single CTA:
+START TEST
+
+No login.
+No signup.
+No passwords.
+
+-------------------------------------
+
+QUESTION SYSTEM:
+
+Create an admin route:
+
+/add-question
+
+Manual form fields:
+
+- question_text
+- option_a
+- option_b
+- option_c
+- option_d
+- correct_answer
+- concept
+- difficulty (easy / medium / hard)
+- ideal_time_seconds
+- trap_type (optional)
+- numeric_answer (optional, for precision detection)
+
+No authentication required.
+
+-------------------------------------
+
+DATABASE SCHEMA:
+
+QUESTIONS
+- id
+- question_text
+- options
+- correct_answer
+- concept
+- difficulty
+- ideal_time_seconds
+- trap_type
+- numeric_answer
+
+USERS
+- id
+- email
+- created_at
+
+TEST_ATTEMPTS
+- id
+- user_id
+- raw_score
+- predicted_range
+- score_ceiling
+- created_at
+
+RESPONSES
+- id
+- attempt_id
+- question_id
+- selected_answer
+- correct
+- confidence_level
+- time_taken_seconds
+- start_delay_seconds
+- answer_changed
+- change_direction
+- numeric_distance_from_correct
+
+DERIVED_METRICS
+Store computed intelligence metrics such as:
+- carelessness_flag
+- guess_probability
+- endurance_index
+- momentum_curve
+- efficiency_projection
+- trap_sensitivity
+- precision_ratio
+- decision_volatility
+- cognitive_start_speed
+
+-------------------------------------
+
+TEST ENGINE:
+
+When user starts:
+
+- Randomly select 12 questions
+- Enforce GLOBAL 15-minute countdown
+- Auto-submit when timer hits zero
+
+Track for EACH question:
+
+1. Start Delay  
+(time from render → first interaction)
+
+2. Time Taken
+
+3. Confidence Level  
+(low / medium / high)
+
+4. Answer Change Behavior  
+- wrong_to_right  
+- right_to_wrong  
+- none  
+
+5. Ideal Time Deviation  
+(actual / ideal)
+
+6. Guess Detection  
+If time < 40% ideal AND confidence low.
+
+7. Precision Ratio  
+If numeric answer exists, measure distance from correct.
+
+-------------------------------------
+
+COMPUTE INTELLIGENCE METRICS AFTER SUBMISSION:
+
+Calculate:
+
+✔ Total Score  
+✔ Accuracy by difficulty  
+✔ Average time deviation  
+
+Detect:
+
+✔ Carelessness  
+(easy wrong + hard correct)
+
+✔ Decision Volatility  
+stable / productive_switcher / self_saboteur
+
+✔ Cognitive Start Speed
+
+✔ Momentum Curve  
+(first third vs middle vs final performance)
+
+✔ Endurance Index  
+late-test accuracy drop
+
+✔ Efficiency Ceiling Projection  
+Project full SAT section time based on pace.
+
+✔ Trap Sensitivity  
+Repeated failure on same trap_type.
+
+✔ Guess Probability Rate
+
+✔ Precision Ratio Classification  
+execution errors vs conceptual gaps
+
+Store all metrics BEFORE calling AI.
+
+-------------------------------------
+
+AI DIAGNOSTIC REPORT (CRITICAL):
+
+Make ONE async LLM call.
+
+Send structured JSON containing:
+
+- score
+- difficulty accuracy
+- time metrics
+- endurance
+- carelessness
+- traps
+- guessing
+- precision
+- volatility
+- efficiency projection
+
+Prompt the AI to generate a HIGH-AUTHORITY report including:
+
+- Predicted SAT Math Range
+- Estimated Score Ceiling
+- Top 3 Score Blockers
+- Fastest Path to +100 Points
+- Behavioral Analysis
+- Speed Analysis
+- Confidence Calibration Insight
+- Trap Blind Spots
+- 2-Week Tactical Plan
+
+Tone must be:
+
+- Data-driven
+- Elite
+- Concise
+- Non-generic
+- Sound like a top SAT performance analyst
+
+Return formatted HTML.
+
+-------------------------------------
+
+EMAIL GATE:
+
+Before showing report:
+
+Display:
+
+"Enter your email to unlock your SAT Intelligence Report."
+
+Store email → then reveal report.
+
+No accounts required.
+
+-------------------------------------
+
+PERFORMANCE REQUIREMENTS:
+
+- Async everywhere possible
+- <300ms server response (excluding AI)
+- Clean error handling
+- Prevent blocking calls
+- Production-style folder structure
+
+-------------------------------------
+
+FILE STRUCTURE:
+
+app/
+ ├── main.py
+ ├── models.py
+ ├── database.py
+ ├── metrics_engine.py
+ ├── ai_report.py
+ ├── templates/
+ ├── static/
+
+-------------------------------------
+
+UI STYLE:
+
+- White background
+- Professional typography
+- Calm, serious assessment feel
+- No bright startup colors
+- No clutter
+
+Should feel like a precision evaluation tool.
+
+-------------------------------------
+
+FUTURE READY (Do NOT build now, only structure for it):
+
+- Paid diagnostics
+- SAT Verbal
+- Adaptive testing
+- Student dashboard
+- Cohort analytics
+- B2B licensing
+
+-------------------------------------
+
+DELIVERABLE:
+
+Provide:
+
+- pip install commands
+- run instructions
+- .env example
+- fully runnable app
+- zero launch errors
