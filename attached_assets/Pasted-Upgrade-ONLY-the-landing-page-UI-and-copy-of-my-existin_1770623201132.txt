@@ -1,0 +1,225 @@
+Upgrade ONLY the landing page UI and copy of my existing FastAPI + Jinja web app.
+
+DO NOT modify:
+- backend logic
+- diagnostic engine
+- report system
+- database
+- routing
+- test flow
+
+This is strictly a landing page conversion optimization task.
+
+-----------------------------------------------------
+
+PRIMARY GOAL:
+
+Transform the landing page into a high-authority, psychologically persuasive hero that drives immediate test starts.
+
+The page must feel:
+
+- premium
+- calm
+- intelligent
+- data-driven
+- trustworthy
+- modern
+
+Avoid anything that feels like a tutoring center or edtech startup.
+
+NO bright gradients.
+NO cartoon illustrations.
+NO marketing fluff.
+
+Design inspiration:
+Stripe, Linear, Notion.
+
+-----------------------------------------------------
+
+TECH REQUIREMENTS:
+
+- Keep Jinja templating
+- Use TailwindCSS
+- No React
+- No heavy JS
+- Maintain fast load time
+
+-----------------------------------------------------
+
+HERO SECTION (FULL VIEWPORT HEIGHT)
+
+Replace the current hero with the following structure:
+
+-----------------------------------------------------
+
+HEADLINE (Large, dominant typography):
+
+"Know Your SAT Math Score Before Test Day"
+
+Make this visually powerful.
+Increase font size significantly.
+Tight line height.
+
+-----------------------------------------------------
+
+SUBHEAD (one sentence):
+
+"AI-driven cognitive analysis reveals your score ceiling and the exact behaviors holding you back."
+
+Muted gray tone.
+Max width for readability.
+
+-----------------------------------------------------
+
+PRIMARY CTA BUTTON:
+
+Replace "Start Test" with:
+
+"Reveal My Predicted Score"
+
+Button requirements:
+
+- Large
+- Dark background (near black or deep indigo)
+- White text
+- Slight hover lift
+- Rounded-lg
+- Strong padding
+
+This button must visually anchor the hero.
+
+-----------------------------------------------------
+
+FRICTION-REDUCING MICROCOPY (directly under button):
+
+Display horizontally with subtle separators:
+
+✔ Takes 15 minutes  
+✔ Instant score prediction  
+✔ No signup required  
+
+Muted text.
+Small but readable.
+
+Purpose: eliminate hesitation.
+
+-----------------------------------------------------
+
+PSYCHOLOGICAL TENSION LINE (VERY IMPORTANT)
+
+Add this below microcopy:
+
+"Most students misjudge their SAT Math score by 80–120 points."
+
+Use slightly darker text to draw attention.
+
+This creates curiosity and drives clicks.
+
+-----------------------------------------------------
+
+TRUST SIGNAL (subtle)
+
+Add a thin line below:
+
+"Built using behavioral data modeled on real SAT performance patterns."
+
+Do NOT use logos.
+Keep it calm and credible.
+
+-----------------------------------------------------
+
+SPACING:
+
+Reduce excessive empty vertical space.
+
+Hero should feel intentional, not floating.
+
+Bring CTA slightly higher for faster eye capture.
+
+-----------------------------------------------------
+
+WHAT YOU GET SECTION (directly below hero)
+
+Create a 3-card grid:
+
+CARD 1:
+Predicted Score Range  
+"Know where you actually stand."
+
+CARD 2:
+Score Ceiling Analysis  
+"Discover how high you can realistically score."
+
+CARD 3:
+Behavioral Breakdown  
+"Identify the habits suppressing your performance."
+
+Card style:
+
+- rounded-xl
+- soft shadow
+- generous padding
+- white background
+- subtle hover elevation
+
+No bright icons required.
+If using icons, keep them minimal and monochrome.
+
+-----------------------------------------------------
+
+TYPOGRAPHY:
+
+Use a modern sans-serif style similar to Inter.
+
+Strong hierarchy:
+
+Headline → bold  
+Section titles → semibold  
+Body → muted gray  
+
+The page should breathe.
+
+Premium products feel calm.
+
+-----------------------------------------------------
+
+COLOR RULES:
+
+Background: off-white or very light gray  
+Primary text: near black  
+Accent: deep blue/indigo  
+
+Avoid startup-style gradients.
+
+-----------------------------------------------------
+
+MOBILE OPTIMIZATION:
+
+Ensure:
+
+- headline wraps cleanly
+- button is thumb-friendly
+- cards stack vertically
+- spacing remains premium
+
+-----------------------------------------------------
+
+PERFORMANCE:
+
+Do not introduce heavy libraries.
+Keep CSS lean.
+
+-----------------------------------------------------
+
+DELIVERABLE:
+
+Update only the landing page template.
+
+Provide:
+
+- Updated Jinja template
+- Tailwind classes
+- Clean semantic layout
+- No backend changes
+
+Do not break the existing app.

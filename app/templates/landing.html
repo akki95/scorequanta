@@ -3,20 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAT Math Intelligence Test</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>SAT Math Intelligence Diagnostic</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #fafafa; color: #111; -webkit-font-smoothing: antialiased; }
+        .hero-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 60px 24px 40px; }
+        .hero-headline { font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; color: #0a0a0a; max-width: 700px; margin-bottom: 20px; }
+        .hero-sub { font-size: clamp(1rem, 2vw, 1.15rem); color: #6b7280; max-width: 560px; line-height: 1.6; margin-bottom: 36px; }
+        .cta-btn { display: inline-block; padding: 18px 48px; background: #111827; color: #fff; font-size: 1.05rem; font-weight: 600; border-radius: 10px; text-decoration: none; letter-spacing: 0.01em; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        .cta-btn:hover { background: #1f2937; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .micro-copy { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+        .micro-item { font-size: 0.85rem; color: #6b7280; display: flex; align-items: center; gap: 6px; }
+        .micro-item .check { color: #4b5563; font-weight: 600; }
+        .tension-line { margin-top: 32px; font-size: 0.95rem; color: #374151; font-weight: 500; max-width: 500px; }
+        .trust-line { margin-top: 14px; font-size: 0.8rem; color: #9ca3af; max-width: 480px; }
+        .features-section { padding: 60px 24px 80px; background: #fff; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 960px; margin: 0 auto; }
+        .feature-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px 28px; transition: all 0.2s ease; }
+        .feature-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-2px); }
+        .feature-card h3 { font-size: 1.1rem; font-weight: 700; color: #111827; margin-bottom: 8px; letter-spacing: -0.01em; }
+        .feature-card p { font-size: 0.92rem; color: #6b7280; line-height: 1.5; }
+        .no-q-msg { display: none; margin-top: 20px; color: #b91c1c; font-size: 0.9rem; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="landing-page">
-            <h1>15-Minute SAT Math Intelligence Test</h1>
-            <p class="subtitle">Predict your SAT score. Discover the fastest path to +100 points.</p>
-            <a href="/test" class="btn-primary" id="startBtn">Start Test</a>
-            <div id="noQuestions" style="display:none; margin-top: 20px;">
-                <p style="color: #b22222; font-size: 0.9rem;">No questions are available at this time. Please check back later.</p>
+    <div class="hero-section">
+        <h1 class="hero-headline">Know Your SAT Math Score Before Test Day</h1>
+        <p class="hero-sub">AI-driven cognitive analysis reveals your score ceiling and the exact behaviors holding you back.</p>
+        <a href="/test" class="cta-btn" id="startBtn">Reveal My Predicted Score</a>
+        <div class="micro-copy">
+            <span class="micro-item"><span class="check">&#10003;</span> Takes 15 minutes</span>
+            <span class="micro-item"><span class="check">&#10003;</span> Instant score prediction</span>
+            <span class="micro-item"><span class="check">&#10003;</span> No signup required</span>
+        </div>
+        <p class="tension-line">Most students misjudge their SAT Math score by 80&ndash;120 points.</p>
+        <p class="trust-line">Built using behavioral data modeled on real SAT performance patterns.</p>
+        <div class="no-q-msg" id="noQuestions">No questions are available at this time. Please check back later.</div>
+    </div>
+
+    <div class="features-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Predicted Score Range</h3>
+                <p>Know where you actually stand &mdash; not where you think you stand.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Score Ceiling Analysis</h3>
+                <p>Discover how high you can realistically score with optimized preparation.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Behavioral Breakdown</h3>
+                <p>Identify the habits and decision patterns suppressing your performance.</p>
             </div>
         </div>
     </div>
+
     <script>
         fetch('/api/questions/count')
             .then(r => r.json())

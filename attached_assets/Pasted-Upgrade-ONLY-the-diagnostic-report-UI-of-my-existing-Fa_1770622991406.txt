@@ -1,0 +1,283 @@
+Upgrade ONLY the diagnostic report UI of my existing FastAPI + Jinja web app.
+
+DO NOT modify:
+- test engine
+- database schema
+- question system
+- authentication
+- landing page
+
+This task is strictly a REPORT REDESIGN.
+
+-----------------------------------------------------
+
+PRIMARY GOAL:
+
+Transform the report from a text-heavy academic document into a modern performance intelligence dashboard.
+
+The UI must feel:
+
+- computational
+- authoritative
+- data-first
+- psychologically persuasive
+- minimal
+- tech-forward
+
+It must NOT feel like a tutoring report or written evaluation.
+
+Users should understand their situation within 5 seconds.
+
+-----------------------------------------------------
+
+TECH REQUIREMENTS:
+
+Frontend:
+- Use TailwindCSS
+- Use Chart.js
+- Keep Jinja templating
+- No React
+
+Design style inspiration:
+Stripe / Linear / Notion analytics dashboards.
+
+Use whitespace generously.
+
+Avoid bright colors or gradients.
+
+-----------------------------------------------------
+
+GLOBAL REPORT RULES:
+
+❌ No long paragraphs  
+❌ Max 2 sentences per insight  
+❌ No academic tone  
+❌ No essay formatting  
+
+✔ Use cards  
+✔ Use grids  
+✔ Use visual hierarchy  
+✔ Lead with numbers  
+
+-----------------------------------------------------
+
+NEW REPORT STRUCTURE (MANDATORY)
+
+Replace the existing report template completely.
+
+=====================================================
+
+SECTION 1 — PERFORMANCE SNAPSHOT (TOP PRIORITY)
+
+Create a large hero card at the top.
+
+Display:
+
+Predicted Score  
+Score Ceiling  
+Unlockable Points  
+
+Example layout:
+
+---------------------------------
+Predicted Score: 440  
+Ceiling: 730  
+Potential Gain: +290  
+---------------------------------
+
+Below it show severity chips:
+
+🔴 Primary Constraint: {{primary_constraint}}
+🟠 Secondary Risk: {{secondary_risk}}
+🟡 Monitor: {{monitor_zone}}
+
+This section must dominate the screen visually.
+
+Users should not scroll to understand their standing.
+
+=====================================================
+
+SECTION 2 — KEY METRICS GRID
+
+Create a responsive grid (2x3 desktop, stacked mobile).
+
+Metrics:
+
+- Cognitive Start Speed
+- Execution Precision
+- Pacing Discipline
+- Trap Awareness
+- Confidence Calibration
+- Decision Stability
+
+Each metric card must contain:
+
+✔ Metric score (0–100)
+✔ Benchmark comparison
+   Example:
+   "Top 25% score: 78"
+✔ ONE-line interpretation
+
+Example interpretation:
+"Fast processing detected but execution errors are suppressing scoring."
+
+Keep interpretations under 12 words.
+
+=====================================================
+
+SECTION 3 — SCORE FRICTION INDEX (PSYCHOLOGY DRIVER)
+
+Create a large gauge or progress bar.
+
+Label:
+
+Score Friction: 8.2 / 10
+
+Bands:
+
+0–3 → Low Suppression  
+4–6 → Moderate  
+7–10 → Severe  
+
+Below it show:
+
+"Behavioral patterns are significantly constraining current scoring."
+
+Short. Clinical.
+
+=====================================================
+
+SECTION 4 — RADAR PERFORMANCE CHART
+
+Use Chart.js radar chart.
+
+Dimensions:
+
+- Processing Speed
+- Precision
+- Endurance
+- Trap Recognition
+- Pacing Control
+- Confidence Accuracy
+
+Goal:
+Visually expose imbalance.
+
+Humans trust shapes faster than paragraphs.
+
+=====================================================
+
+SECTION 5 — TOP SCORE SUPPRESSORS
+
+Rename from “blockers”.
+
+Display stacked severity cards ordered automatically.
+
+Card format:
+
+🔴 Extreme Pacing Collapse  
+Data: Avg time deviation = 0.04  
+Impact: Accuracy deterioration across all difficulties.  
+Directive: Slow to minimum 75 seconds per question.
+
+RULE:
+Insight → Impact → Directive
+
+NO explanation paragraphs.
+
+Max 3 lines.
+
+=====================================================
+
+SECTION 6 — FASTEST PATH TO +100
+
+Place HIGH on the page (not buried).
+
+Display as command checklist:
+
+✔ Slow pacing immediately  
+✔ Achieve 95% accuracy on easy problems  
+✔ Maintain an error log  
+✔ Identify traps before solving  
+
+Commands only.
+
+No teaching.
+
+=====================================================
+
+SECTION 7 — BENCHMARK COMPARISON (HIGH AUTHORITY)
+
+Add a horizontal comparison bar:
+
+Student vs 700+ scorers.
+
+Example:
+
+Pacing Discipline  
+You: 22  
+Top Scorers: 81  
+
+Comparison creates instant psychological motivation.
+
+=====================================================
+
+SECTION 8 — MINIMAL AI NARRATIVE (CONTROL THE LLM)
+
+Rewrite the AI prompt so it returns structured JSON instead of long prose.
+
+Format:
+
+{
+  "primary_constraint": "",
+  "secondary_risk": "",
+  "monitor_zone": "",
+  "metric_interpretations": [],
+  "top_suppressors": [],
+  "fastest_path": []
+}
+
+STRICTLY prohibit essay output.
+
+=====================================================
+
+DESIGN DETAILS:
+
+Cards:
+- rounded-xl
+- soft shadow
+- generous padding
+
+Typography:
+- modern sans-serif
+- strong headings
+- muted secondary text
+
+Spacing:
+Make the interface breathe.
+
+Premium products are calm.
+
+-----------------------------------------------------
+
+PERFORMANCE:
+
+Lazy-load charts.
+Keep template fast.
+Avoid heavy JS.
+
+-----------------------------------------------------
+
+DELIVERABLE:
+
+Update only the report template files.
+
+Provide:
+
+- updated Jinja template
+- Tailwind usage
+- Chart.js integration
+- modified AI prompt
+- sample JSON response format
+
+Do not break the existing app.

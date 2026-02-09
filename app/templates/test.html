@@ -3,44 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAT Math Diagnostic - Test</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>SAT Math Diagnostic</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #fafafa; color: #111; -webkit-font-smoothing: antialiased; }
+
+        .top-bar { position: fixed; top: 0; left: 0; right: 0; background: #fff; border-bottom: 1px solid #e5e7eb; padding: 0; z-index: 100; }
+        .top-bar-inner { max-width: 720px; margin: 0 auto; padding: 12px 24px; }
+        .timer-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .timer-left { display: flex; flex-direction: column; }
+        .timer-label { font-size: 0.72rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+        .timer-value { font-size: 1.3rem; font-weight: 700; color: #111827; font-variant-numeric: tabular-nums; }
+        .timer-value.warning { color: #b91c1c; }
+        .pace-hint { font-size: 0.75rem; color: #9ca3af; text-align: right; }
+        .progress-track { width: 100%; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #111827; border-radius: 2px; transition: width 0.4s ease; }
+        .progress-pct { text-align: right; font-size: 0.72rem; color: #9ca3af; margin-top: 3px; font-weight: 500; }
+
+        .test-container { max-width: 720px; margin: 0 auto; padding: 24px; padding-top: 120px; padding-bottom: 40px; }
+
+        .orientation-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px 28px; margin-bottom: 28px; }
+        .orientation-title { font-size: 1rem; font-weight: 700; color: #111827; letter-spacing: -0.01em; margin-bottom: 4px; }
+        .orientation-sub { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
+        .orientation-tips { display: flex; gap: 20px; flex-wrap: wrap; }
+        .orientation-tip { font-size: 0.82rem; color: #4b5563; display: flex; align-items: center; gap: 5px; }
+        .orientation-tip .ck { color: #6b7280; }
+
+        .question-card { display: none; animation: fadeIn 0.3s ease; }
+        .question-card.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        .q-text { font-size: 1.12rem; line-height: 1.7; color: #111827; margin-bottom: 28px; font-weight: 500; }
+
+        .options-list { margin-bottom: 28px; }
+        .option-btn { display: block; width: 100%; text-align: left; padding: 16px 20px; margin-bottom: 12px; border: 1px solid #d1d5db; border-radius: 10px; background: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: #1f2937; cursor: pointer; transition: all 0.15s ease; }
+        .option-btn:hover { border-color: #111827; background: #f9fafb; }
+        .option-btn.selected { border-color: #111827; background: #f3f4f6; font-weight: 600; }
+
+        .numeric-input-group { margin-bottom: 24px; }
+        .numeric-label { font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+        .numeric-field { max-width: 200px; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; outline: none; }
+        .numeric-field:focus { border-color: #111827; }
+
+        .confidence-section { margin-bottom: 28px; }
+        .confidence-label { font-size: 0.82rem; color: #374151; font-weight: 500; margin-bottom: 4px; }
+        .confidence-hint { font-size: 0.75rem; color: #9ca3af; margin-bottom: 10px; }
+        .confidence-options { display: flex; gap: 10px; }
+        .confidence-btn { flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #6b7280; cursor: pointer; text-align: center; transition: all 0.15s; font-weight: 500; }
+        .confidence-btn:hover { border-color: #111827; }
+        .confidence-btn.selected { border-color: #111827; background: #111827; color: #fff; }
+
+        .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
+        .btn-prev { padding: 12px 28px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; color: #374151; font-family: 'Inter', sans-serif; font-size: 0.9rem; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+        .btn-prev:hover { border-color: #111827; color: #111827; }
+        .btn-continue { padding: 14px 36px; background: #111827; color: #fff; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.95rem; cursor: pointer; font-weight: 600; transition: all 0.2s; letter-spacing: 0.01em; }
+        .btn-continue:hover { background: #1f2937; transform: translateY(-1px); }
+        .btn-submit { padding: 14px 36px; background: #111827; color: #fff; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.95rem; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .btn-submit:hover { background: #1f2937; }
+
+        .momentum-msg { text-align: center; padding: 10px 16px; margin-bottom: 20px; font-size: 0.85rem; color: #374151; font-weight: 500; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; display: none; animation: fadeIn 0.4s ease; }
+
+        .loading-screen { text-align: center; padding: 80px 24px; max-width: 720px; margin: 0 auto; }
+        .spinner { width: 36px; height: 36px; border: 3px solid #e5e7eb; border-top-color: #111827; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: 1rem; color: #6b7280; }
+
+        .email-screen { max-width: 560px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+        .email-headline { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; color: #0a0a0a; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 10px; }
+        .email-curiosity { font-size: 0.95rem; color: #374151; margin-bottom: 24px; font-weight: 500; }
+        .email-value-text { font-size: 0.9rem; color: #6b7280; line-height: 1.6; margin-bottom: 28px; max-width: 460px; margin-left: auto; margin-right: auto; }
+
+        .value-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px 24px; margin-bottom: 28px; text-align: left; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .value-card-title { font-size: 0.95rem; font-weight: 700; color: #111827; margin-bottom: 14px; }
+        .value-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; font-size: 0.88rem; color: #374151; line-height: 1.4; }
+        .value-check { color: #4b5563; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+
+        .email-field { width: 100%; max-width: 400px; padding: 14px 20px; border: 1px solid #d1d5db; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem; outline: none; margin-bottom: 16px; text-align: center; }
+        .email-field:focus { border-color: #111827; }
+        .email-submit-btn { display: inline-block; padding: 16px 48px; background: #111827; color: #fff; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .email-submit-btn:hover { background: #1f2937; transform: translateY(-1px); }
+        .email-submit-btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
+        .email-privacy { font-size: 0.75rem; color: #9ca3af; margin-top: 12px; }
+
+        .report-screen { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; display: none; }
+
+        @media (max-width: 600px) {
+            .test-container { padding: 16px; padding-top: 120px; }
+            .orientation-tips { flex-direction: column; gap: 6px; }
+            .confidence-options { flex-direction: column; }
+            .micro-copy { flex-direction: column; gap: 6px; }
+        }
+    </style>
 </head>
 <body>
-    <div class="timer-bar">
-        <span class="progress-text" id="progressText">Question 1 of {{ question_count }}</span>
-        <span class="time" id="timerDisplay">15:00</span>
-    </div>
-
-    <div class="container question-container" id="testContainer">
-    </div>
-
-    <div class="container" id="submittingScreen" style="display:none;">
-        <div class="loading">
-            <div class="spinner"></div>
-            <p>Analyzing your performance...</p>
+    <div class="top-bar" id="topBar">
+        <div class="top-bar-inner">
+            <div class="timer-row">
+                <div class="timer-left">
+                    <span class="timer-label">Time Remaining</span>
+                    <span class="timer-value" id="timerDisplay">15:00</span>
+                </div>
+                <div class="pace-hint">Recommended Pace: ~75 sec/question</div>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-pct" id="progressPct">0% complete</div>
         </div>
     </div>
 
-    <div class="container" id="emailGateScreen" style="display:none;">
-        <div class="score-summary">
-            <div class="score-big" id="scoreDisplay">--</div>
-            <div class="score-label">Questions Correct</div>
+    <div class="test-container" id="testContainer">
+        <div class="orientation-card" id="orientationCard">
+            <div class="orientation-title">SAT Math Intelligence Diagnostic</div>
+            <div class="orientation-sub">Measures speed, precision, and decision patterns.</div>
+            <div class="orientation-tips">
+                <span class="orientation-tip"><span class="ck">&#10003;</span> No tricks</span>
+                <span class="orientation-tip"><span class="ck">&#10003;</span> Skip if stuck</span>
+                <span class="orientation-tip"><span class="ck">&#10003;</span> Accuracy > speed</span>
+            </div>
         </div>
-        <div class="email-gate">
-            <h2>Your SAT Intelligence Report is Ready</h2>
-            <p>Enter your email to unlock your personalized diagnostic report.</p>
-            <input type="email" class="email-input" id="emailInput" placeholder="you@email.com">
-            <br>
-            <button class="btn-primary" id="unlockBtn" onclick="unlockReport()">Unlock Report</button>
-        </div>
+        <div id="momentumMsg" class="momentum-msg"></div>
+        <div id="questionsWrapper"></div>
     </div>
 
-    <div class="container-wide" id="reportScreen" style="display:none;">
-        <div class="score-summary">
-            <div class="score-big" id="finalScoreDisplay">--</div>
-            <div class="score-label">Questions Correct out of {{ question_count }}</div>
+    <div class="loading-screen" id="submittingScreen" style="display:none;">
+        <div class="spinner"></div>
+        <p class="loading-text">Analyzing your performance...</p>
+    </div>
+
+    <div class="email-screen" id="emailGateScreen" style="display:none;">
+        <h1 class="email-headline">Your Predicted SAT Score Is Ready</h1>
+        <p class="email-curiosity">Students are often surprised by their predicted range.</p>
+        <p class="email-value-text">See your predicted score, ceiling, behavioral analysis, and a personalized 14-day plan built from your test performance.</p>
+
+        <div class="value-card">
+            <div class="value-card-title">Your Report Includes:</div>
+            <div class="value-item"><span class="value-check">&#10003;</span> Predicted SAT Score</div>
+            <div class="value-item"><span class="value-check">&#10003;</span> Score Ceiling &amp; Unlockable Points</div>
+            <div class="value-item"><span class="value-check">&#10003;</span> Top Score Suppressors</div>
+            <div class="value-item"><span class="value-check">&#10003;</span> Behavioral Intelligence Analysis</div>
+            <div class="value-item"><span class="value-check">&#10003;</span> Speed &amp; Confidence Calibration</div>
+            <div class="value-item"><span class="value-check">&#10003;</span> Personalized 14-Day Tactical Plan</div>
         </div>
+
+        <input type="email" class="email-field" id="emailInput" placeholder="you@email.com" autocomplete="email">
+        <br>
+        <button class="email-submit-btn" id="unlockBtn" onclick="unlockReport()">Reveal My Report</button>
+        <p class="email-privacy">Your email is used only to deliver your report. No spam.</p>
+    </div>
+
+    <div class="report-screen" id="reportScreen">
         <div id="reportContent"></div>
     </div>
 
@@ -66,9 +180,15 @@
             numeric_input: null,
         }));
 
+        const momentumMessages = {
+            3: "Strong start. You're 25% done.",
+            6: "Halfway there.",
+            9: "Final stretch."
+        };
+
         function init() {
             if (questions.length === 0) {
-                document.getElementById('testContainer').innerHTML = '<div class="no-questions-warning"><p>No questions available. <a href="/add-question">Add questions</a> first.</p></div>';
+                document.getElementById('questionsWrapper').innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;"><p>No questions available. Please check back later.</p></div>';
                 return;
             }
             renderQuestions();
@@ -77,18 +197,17 @@
         }
 
         function renderQuestions() {
-            const container = document.getElementById('testContainer');
+            const wrapper = document.getElementById('questionsWrapper');
             let html = '';
             questions.forEach((q, idx) => {
                 const numericHtml = q.has_numeric ? `
-                    <div class="form-group" style="margin-top:12px; margin-bottom:16px;">
-                        <label style="font-size:0.8rem; color:#888; text-transform:uppercase; letter-spacing:0.08em;">Your Numeric Answer (optional)</label>
-                        <input type="number" step="any" class="email-input" style="max-width:200px;" data-q="${idx}" onchange="setNumeric(${idx}, this.value)" placeholder="e.g. 42.5">
+                    <div class="numeric-input-group">
+                        <div class="numeric-label">Your Numeric Answer (optional)</div>
+                        <input type="number" step="any" class="numeric-field" data-q="${idx}" onchange="setNumeric(${idx}, this.value)" placeholder="e.g. 42.5">
                     </div>` : '';
                 html += `
                 <div class="question-card" id="q${idx}">
-                    <div class="question-number">Question ${idx + 1} of ${questions.length}</div>
-                    <div class="question-text">${q.question_text}</div>
+                    <div class="q-text">${q.question_text}</div>
                     <div class="options-list">
                         <button class="option-btn" data-q="${idx}" data-opt="A" onclick="selectOption(${idx}, 'A', this)">A. ${q.option_a}</button>
                         <button class="option-btn" data-q="${idx}" data-opt="B" onclick="selectOption(${idx}, 'B', this)">B. ${q.option_b}</button>
@@ -96,24 +215,25 @@
                         <button class="option-btn" data-q="${idx}" data-opt="D" onclick="selectOption(${idx}, 'D', this)">D. ${q.option_d}</button>
                     </div>
                     ${numericHtml}
-                    <div class="confidence-selector">
-                        <label>Confidence Level</label>
+                    <div class="confidence-section">
+                        <div class="confidence-label">How confident are you?</div>
+                        <div class="confidence-hint">Don't overthink it.</div>
                         <div class="confidence-options">
                             <button class="confidence-btn" data-q="${idx}" data-conf="low" onclick="setConfidence(${idx}, 'low', this)">Low</button>
-                            <button class="confidence-btn selected" data-q="${idx}" data-conf="medium" onclick="setConfidence(${idx}, 'medium', this)">Medium</button>
+                            <button class="confidence-btn" data-q="${idx}" data-conf="medium" onclick="setConfidence(${idx}, 'medium', this)">Medium</button>
                             <button class="confidence-btn" data-q="${idx}" data-conf="high" onclick="setConfidence(${idx}, 'high', this)">High</button>
                         </div>
                     </div>
-                    <div class="nav-buttons">
-                        ${idx > 0 ? `<button class="btn-nav" onclick="prevQuestion()">Previous</button>` : '<div></div>'}
+                    <div class="nav-row">
+                        ${idx > 0 ? `<button class="btn-prev" onclick="prevQuestion()">&#8592; Back</button>` : '<div></div>'}
                         ${idx < questions.length - 1
-                            ? `<button class="btn-nav" onclick="nextQuestion()">Next</button>`
+                            ? `<button class="btn-continue" onclick="nextQuestion()">Continue &#8594;</button>`
                             : `<button class="btn-submit" onclick="submitTest()">Submit Test</button>`
                         }
                     </div>
                 </div>`;
             });
-            container.innerHTML = html;
+            wrapper.innerHTML = html;
         }
 
         function setNumeric(qIdx, value) {
@@ -127,7 +247,26 @@
             currentQuestion = idx;
             questionStartTime = Date.now();
             firstInteractionTime = null;
-            document.getElementById('progressText').textContent = `Question ${idx + 1} of ${questions.length}`;
+            updateProgress(idx);
+
+            if (idx >= 1) {
+                document.getElementById('orientationCard').style.display = 'none';
+            }
+
+            const msgEl = document.getElementById('momentumMsg');
+            if (momentumMessages[idx]) {
+                msgEl.textContent = momentumMessages[idx];
+                msgEl.style.display = 'block';
+                setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+            } else {
+                msgEl.style.display = 'none';
+            }
+        }
+
+        function updateProgress(idx) {
+            const pct = Math.round(((idx) / questions.length) * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressPct').textContent = pct + '% complete';
         }
 
         function recordInteraction() {
@@ -147,7 +286,6 @@
                 }
             }
             answers[qIdx].selected_answer = opt;
-
             document.querySelectorAll(`.option-btn[data-q="${qIdx}"]`).forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
         }
@@ -195,7 +333,7 @@
             answers[currentQuestion].time_taken_seconds += Math.round((Date.now() - questionStartTime) / 1000 * 100) / 100;
 
             document.getElementById('testContainer').style.display = 'none';
-            document.querySelector('.timer-bar').style.display = 'none';
+            document.getElementById('topBar').style.display = 'none';
             document.getElementById('submittingScreen').style.display = 'block';
 
             const payload = answers.map(a => ({
@@ -216,11 +354,10 @@
                     body: JSON.stringify({ attempt_id: attemptId, answers: payload }),
                 });
                 const data = await resp.json();
-                document.getElementById('scoreDisplay').textContent = `${data.score} / ${data.total}`;
                 document.getElementById('submittingScreen').style.display = 'none';
                 document.getElementById('emailGateScreen').style.display = 'block';
             } catch (err) {
-                document.getElementById('submittingScreen').innerHTML = '<div class="loading"><p>Something went wrong. Please try again.</p></div>';
+                document.getElementById('submittingScreen').innerHTML = '<div style="text-align:center;padding:60px;"><p style="color:#6b7280;">Something went wrong. Please try again.</p></div>';
             }
         }
 
@@ -247,18 +384,17 @@
                 } else {
                     document.getElementById('emailGateScreen').style.display = 'none';
                     document.getElementById('submittingScreen').style.display = 'block';
-                    document.getElementById('submittingScreen').innerHTML = '<div class="loading"><div class="spinner"></div><p>Generating your intelligence report...</p></div>';
+                    document.getElementById('submittingScreen').innerHTML = '<div class="spinner"></div><p class="loading-text">Generating your intelligence report...</p>';
                     pollForReport(data.score);
                 }
             } catch (err) {
                 alert('Something went wrong. Please try again.');
                 document.getElementById('unlockBtn').disabled = false;
-                document.getElementById('unlockBtn').textContent = 'Unlock Report';
+                document.getElementById('unlockBtn').textContent = 'Reveal My Report';
             }
         }
 
         function showReport(score, reportHtml) {
-            document.getElementById('finalScoreDisplay').textContent = `${score} / ${questions.length}`;
             document.getElementById('reportContent').innerHTML = reportHtml;
             document.getElementById('emailGateScreen').style.display = 'none';
             document.getElementById('submittingScreen').style.display = 'none';
@@ -278,12 +414,12 @@
                         showReport(data.score || score, data.report);
                     } else if (attempts >= maxAttempts) {
                         clearInterval(pollInterval);
-                        showReport(score, '<div class="report-section"><h2>Report Timeout</h2><p>Report generation is taking longer than expected. Please refresh the page to check again.</p></div>');
+                        showReport(score, '<div style="text-align:center;padding:40px;"><h2 style="font-size:1.2rem;color:#111;">Report Timeout</h2><p style="color:#6b7280;">Report generation is taking longer than expected. Please refresh the page to check again.</p></div>');
                     }
                 } catch (e) {
                     if (attempts >= maxAttempts) {
                         clearInterval(pollInterval);
-                        showReport(score, '<div class="report-section"><h2>Error</h2><p>Could not load your report. Please try again later.</p></div>');
+                        showReport(score, '<div style="text-align:center;padding:40px;"><h2 style="font-size:1.2rem;color:#111;">Error</h2><p style="color:#6b7280;">Could not load your report. Please try again later.</p></div>');
                     }
                 }
             }, 2000);

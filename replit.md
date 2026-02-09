@@ -6,8 +6,9 @@ A production-style lightweight SAT Math diagnostic tool that predicts SAT Math s
 ## Tech Stack
 - **Backend**: Python FastAPI with async endpoints
 - **Database**: PostgreSQL (Replit built-in)
-- **Frontend**: Jinja2 templates, vanilla JavaScript, minimal CSS
-- **AI**: Gemini (via Replit AI Integrations) for diagnostic report generation
+- **Frontend**: Jinja2 templates, vanilla JavaScript, TailwindCSS (CDN), Chart.js
+- **AI**: Gemini (via Replit AI Integrations) for structured diagnostic report generation
+- **Font**: Inter (Google Fonts)
 
 ## Project Structure
 ```
@@ -17,24 +18,33 @@ app/
   models.py          - SQLAlchemy ORM models
   database.py        - Async database engine/session setup
   metrics_engine.py  - Behavioral analytics computation
-  ai_report.py       - Gemini-powered diagnostic report generation
+  ai_report.py       - Gemini-powered diagnostic report (structured JSON -> dashboard HTML)
   templates/
-    landing.html     - Landing page with CTA
-    test.html        - Test engine with timer and tracking
+    landing.html     - High-authority landing page with hero, CTA, feature cards
+    test.html        - Test engine with progress bar, timer, orientation card, email gate, report display
+    admin.html       - Admin dashboard with question management and stats
+    admin_login.html - Admin login page
     add_question.html - Admin question form
+    edit_question.html - Admin question edit form
   static/
-    style.css        - Professional minimal styling
+    style.css        - Legacy styles (mostly overridden by Tailwind in templates)
 ```
 
 ## Key Features
 - Zero-login 15-minute diagnostic test
 - 12 randomly selected questions per attempt
-- Global countdown timer with auto-submit
+- Visual progress bar with % completion
+- Orientation header with tips (No tricks, Skip if stuck, Accuracy > speed)
+- Timer with recommended pace display (~75 sec/question)
+- Momentum messages at Q3, Q6, Q9
 - Per-question behavioral tracking (start delay, time taken, confidence, answer changes)
+- Confidence selector with no default selection and microcopy
 - Computed intelligence metrics (carelessness, decision volatility, momentum curve, endurance, etc.)
-- AI-generated diagnostic report via Gemini
-- Email gate before report reveal
-- Admin route at /add-question for adding questions
+- AI-generated structured diagnostic report via Gemini (JSON -> dashboard)
+- Performance dashboard with Chart.js radar chart, metrics grid, severity cards, benchmark comparisons
+- Email gate with value stack card before report reveal
+- Background report generation
+- Admin dashboard with password authentication, question CRUD, usage stats
 
 ## Database Schema
 - **questions**: Question bank with difficulty, concept, trap types
@@ -42,6 +52,17 @@ app/
 - **test_attempts**: Test session records with scores and AI reports
 - **responses**: Per-question response data with behavioral metrics
 - **derived_metrics**: Computed analytics per attempt
+
+## AI Report Format
+The AI prompt requests structured JSON from Gemini with fields:
+- predicted_score, score_ceiling, primary_constraint, secondary_risk, monitor_zone
+- score_friction (0-10), friction_description
+- metric_interpretations (6 metrics with scores, benchmarks, interpretations)
+- radar_scores (6 values for Chart.js radar)
+- top_suppressors (severity, title, data, impact, directive)
+- fastest_path (action commands)
+- benchmarks (you vs 700+ scorers)
+Includes fallback rendering if JSON parsing fails.
 
 ## Running
 ```
@@ -53,6 +74,8 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 - AI_INTEGRATIONS_GEMINI_API_KEY: Gemini API key (auto-set via Replit AI Integrations)
 - AI_INTEGRATIONS_GEMINI_BASE_URL: Gemini base URL (auto-set)
 - SESSION_SECRET: Session secret key
+- ADMIN_PASSWORD: Admin dashboard password
 
 ## Recent Changes
+- 2026-02-09: Complete UI overhaul - landing page (Stripe-inspired hero, CTA, feature cards), test page (progress bar, orientation card, timer reframe, momentum messages, confidence microcopy, Continue button), email capture (value stack card, curiosity headline), report (structured JSON from Gemini, performance dashboard with Chart.js radar, metrics grid, severity chips, benchmark bars, fallback rendering)
 - 2026-02-08: Initial build with full diagnostic flow, metrics engine, Gemini AI reports, 15 seeded SAT questions
