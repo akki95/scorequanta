@@ -32,7 +32,10 @@ def build_report_html(data: dict, metrics: dict) -> str:
     metrics_html = ""
     for m in metric_cards:
         name = m.get("name", "")
-        score = m.get("score", 0)
+        try:
+            score = int(float(str(m.get("score", 0))))
+        except (ValueError, TypeError):
+            score = 0
         benchmark = m.get("benchmark", "")
         interpretation = m.get("interpretation", "")
         metrics_html += f'''
@@ -73,8 +76,12 @@ def build_report_html(data: dict, metrics: dict) -> str:
     bench_html = ""
     for b in benchmarks:
         name = b.get("name", "")
-        you = b.get("you", 0)
-        top = b.get("top_scorers", 0)
+        try:
+            you = int(float(str(b.get("you", 0))))
+            top = int(float(str(b.get("top_scorers", 0))))
+        except (ValueError, TypeError):
+            you = 0
+            top = 1
         you_pct = min(100, max(5, int((you / max(top, 1)) * 100)))
         bench_html += f'''
         <div class="bench-row">
@@ -92,7 +99,11 @@ def build_report_html(data: dict, metrics: dict) -> str:
         </div>'''
 
     radar_labels = json.dumps(["Processing Speed", "Precision", "Endurance", "Trap Recognition", "Pacing Control", "Confidence Accuracy"])
-    radar_data_vals = data.get("radar_scores", [50, 50, 50, 50, 50, 50])
+    raw_radar = data.get("radar_scores", [50, 50, 50, 50, 50, 50])
+    try:
+        radar_data_vals = [int(float(str(v))) for v in raw_radar]
+    except (ValueError, TypeError):
+        radar_data_vals = [50, 50, 50, 50, 50, 50]
     radar_data = json.dumps(radar_data_vals)
 
     return f'''
@@ -316,6 +327,7 @@ RULES:
 - Every insight must connect to this student's specific data.
 """
 
+    raw = ""
     try:
         response = client.models.generate_content(
             model="gemini-2.5-flash",
@@ -329,10 +341,11 @@ RULES:
 
         report_data = json.loads(raw)
         return build_report_html(report_data, metrics)
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         return _fallback_report(metrics, raw_text=raw)
     except Exception as e:
-        return f'<div style="text-align:center;padding:40px;font-family:Inter,sans-serif;"><h2 style="font-size:1.2rem;color:#111;">Report Generation Error</h2><p style="color:#6b7280;">We encountered an issue generating your report. Please try again. Error: {str(e)}</p></div>'
+        print(f"Report build error, using fallback: {e}")
+        return _fallback_report(metrics, raw_text=str(e))
 
 
 def _fallback_report(metrics: dict, raw_text: str = "") -> str:
