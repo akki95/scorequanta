@@ -193,23 +193,21 @@ async def submit_test(request: Request, db: AsyncSession = Depends(get_db)):
 
 async def generate_report_background(attempt_id: int, metrics: dict):
     try:
-        report_html = await asyncio.to_thread(_generate_report_sync, metrics)
+        report_html = await asyncio.to_thread(generate_diagnostic_report, metrics)
+    except Exception as e:
+        print(f"Background report generation failed for attempt {attempt_id}: {e}")
+        from app.ai_report import _fallback_report
+        report_html = _fallback_report(metrics, raw_text=str(e))
+
+    try:
         async with async_session() as db:
             attempt = await db.get(TestAttempt, attempt_id)
             if attempt:
                 attempt.ai_report = report_html
                 await db.commit()
+                print(f"Report saved for attempt {attempt_id}")
     except Exception as e:
-        print(f"Background report generation failed for attempt {attempt_id}: {e}")
-
-
-def _generate_report_sync(metrics):
-    import asyncio as _asyncio
-    loop = _asyncio.new_event_loop()
-    try:
-        return loop.run_until_complete(generate_diagnostic_report(metrics))
-    finally:
-        loop.close()
+        print(f"Failed to save report for attempt {attempt_id}: {e}")
 
 
 @app.post("/api/unlock-report")

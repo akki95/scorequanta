@@ -261,7 +261,7 @@ def build_report_html(data: dict, metrics: dict) -> str:
 '''
 
 
-async def generate_diagnostic_report(metrics: dict) -> str:
+def generate_diagnostic_report(metrics: dict) -> str:
     prompt = f"""You are an elite SAT Math performance analyst. Analyze the following student diagnostic data and return a STRUCTURED JSON response.
 
 STUDENT DATA:
@@ -350,7 +350,7 @@ RULES:
 
 def _fallback_report(metrics: dict, raw_text: str = "") -> str:
     score = metrics.get("total_score", 0)
-    total = metrics.get("total_questions", 12)
+    total = 12
     pct = (score / max(total, 1)) * 100
 
     if pct >= 80:
@@ -366,6 +366,28 @@ def _fallback_report(metrics: dict, raw_text: str = "") -> str:
         predicted = "320-420"
         ceiling = "560-640"
 
+    try:
+        cog_speed = float(metrics.get("cognitive_start_speed", 3))
+        cog_score = int(max(20, min(100, 100 - cog_speed * 15)))
+    except (ValueError, TypeError):
+        cog_score = 50
+
+    try:
+        time_dev = float(metrics.get("avg_time_deviation", 1))
+        pace_score = int(max(20, min(100, 100 - abs(time_dev - 1) * 50)))
+    except (ValueError, TypeError):
+        pace_score = 50
+
+    volatility = metrics.get("decision_volatility", "stable")
+    if volatility == "stable":
+        decision_score = 80
+    elif volatility == "productive_switcher":
+        decision_score = 60
+    elif volatility == "self_saboteur":
+        decision_score = 30
+    else:
+        decision_score = 50
+
     fallback_data = {
         "predicted_score": predicted,
         "score_ceiling": ceiling,
@@ -375,18 +397,18 @@ def _fallback_report(metrics: dict, raw_text: str = "") -> str:
         "score_friction": round(max(1, 10 - pct / 10), 1),
         "friction_description": "Behavioral patterns are constraining current scoring potential.",
         "metric_interpretations": [
-            {"name": "Cognitive Start Speed", "score": int(max(20, 100 - metrics.get("cognitive_start_speed", 3) * 15)), "benchmark": "Top 25% score: 78", "interpretation": "Processing delay detected on question entry."},
+            {"name": "Cognitive Start Speed", "score": cog_score, "benchmark": "Top 25% score: 78", "interpretation": "Processing delay detected on question entry."},
             {"name": "Execution Precision", "score": int(pct), "benchmark": "Top 25% score: 85", "interpretation": "Accuracy needs improvement across difficulties."},
-            {"name": "Pacing Discipline", "score": int(max(20, 100 - abs(metrics.get("avg_time_deviation", 1) - 1) * 50)), "benchmark": "Top 25% score: 81", "interpretation": "Time management requires calibration."},
+            {"name": "Pacing Discipline", "score": pace_score, "benchmark": "Top 25% score: 81", "interpretation": "Time management requires calibration."},
             {"name": "Trap Awareness", "score": 50, "benchmark": "Top 25% score: 80", "interpretation": "Trap detection is inconsistent."},
             {"name": "Confidence Calibration", "score": 55, "benchmark": "Top 25% score: 82", "interpretation": "Confidence partially misaligned with performance."},
-            {"name": "Decision Stability", "score": int(max(20, 100 - metrics.get("decision_volatility", 0) * 100)), "benchmark": "Top 25% score: 88", "interpretation": "Answer changes affecting score stability."},
+            {"name": "Decision Stability", "score": decision_score, "benchmark": "Top 25% score: 88", "interpretation": "Answer changes affecting score stability."},
         ],
-        "radar_scores": [60, int(pct), 50, 50, 55, 60],
+        "radar_scores": [cog_score, int(pct), 50, 50, pace_score, decision_score],
         "top_suppressors": [
             {"severity": "extreme", "title": "Core Accuracy Deficit", "data": f"Score: {score}/{total}", "impact": "Fundamental accuracy limits score floor.", "directive": "Master all easy-tier concepts first."},
             {"severity": "high", "title": "Pacing Imbalance", "data": f"Avg time deviation: {metrics.get('avg_time_deviation', 'N/A')}", "impact": "Inconsistent pacing degrades later performance.", "directive": "Target 75 seconds per question."},
-            {"severity": "moderate", "title": "Decision Volatility", "data": f"Volatility: {metrics.get('decision_volatility', 'N/A')}", "impact": "Answer changes may be hurting more than helping.", "directive": "Trust first instinct on medium questions."},
+            {"severity": "moderate", "title": "Decision Volatility", "data": f"Volatility: {volatility}", "impact": "Answer changes may be hurting more than helping.", "directive": "Trust first instinct on medium questions."},
         ],
         "fastest_path": [
             "Achieve 95% accuracy on easy problems",
@@ -395,7 +417,7 @@ def _fallback_report(metrics: dict, raw_text: str = "") -> str:
             "Identify traps before solving"
         ],
         "benchmarks": [
-            {"name": "Pacing Discipline", "you": int(max(20, 100 - abs(metrics.get("avg_time_deviation", 1) - 1) * 50)), "top_scorers": 81},
+            {"name": "Pacing Discipline", "you": pace_score, "top_scorers": 81},
             {"name": "Execution Precision", "you": int(pct), "top_scorers": 85},
             {"name": "Trap Awareness", "you": 50, "top_scorers": 80},
             {"name": "Confidence Calibration", "you": 55, "top_scorers": 82},
