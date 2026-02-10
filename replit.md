@@ -1,7 +1,7 @@
-# SAT Math Diagnostic Web App
+# ScoreQuanta - SAT Math Diagnostic Web App
 
 ## Overview
-A production-style lightweight SAT Math diagnostic tool that predicts SAT Math scores using behavioral and performance analytics. It measures not just correctness but timing, confidence calibration, decision volatility, and cognitive patterns across a 15-minute, 12-question diagnostic test.
+ScoreQuanta is a production-style lightweight SAT Math diagnostic tool that predicts SAT Math scores using behavioral and performance analytics. It measures not just correctness but timing, confidence calibration, decision volatility, and cognitive patterns across a 15-minute, 12-question diagnostic test.
 
 ## Tech Stack
 - **Backend**: Python FastAPI with async endpoints
@@ -27,6 +27,7 @@ app/
     add_question.html - Admin question form
     edit_question.html - Admin question edit form
   static/
+    logo.png         - ScoreQuanta brand logo (transparent background)
     style.css        - Legacy styles (mostly overridden by Tailwind in templates)
 ```
 
@@ -76,6 +77,14 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 - SESSION_SECRET: Session secret key
 - ADMIN_PASSWORD: Admin dashboard password
 
+## Branding
+- Brand name: ScoreQuanta
+- Contact email: akash@scorequanta.com
+- Logo: app/static/logo.png (blue icon + text, transparent background)
+- Design: Premium, calm, analytical - no gamification, no gradients, no bright colors
+
 ## Recent Changes
+- 2026-02-10: ScoreQuanta branding - navbar with logo + Contact mailto button, positioning tagline, updated CTA ("Start Free Diagnostic"), expert interpretation card below report with mailto + email capture, page titles updated
+- 2026-02-10: Fixed report generation crash - decision_volatility (string) was used in arithmetic, fallback report now handles all metric types correctly, simplified async report generation
 - 2026-02-09: Complete UI overhaul - landing page (Stripe-inspired hero, CTA, feature cards), test page (progress bar, orientation card, timer reframe, momentum messages, confidence microcopy, Continue button), email capture (value stack card, curiosity headline), report (structured JSON from Gemini, performance dashboard with Chart.js radar, metrics grid, severity chips, benchmark bars, fallback rendering)
 - 2026-02-08: Initial build with full diagnostic flow, metrics engine, Gemini AI reports, 15 seeded SAT questions

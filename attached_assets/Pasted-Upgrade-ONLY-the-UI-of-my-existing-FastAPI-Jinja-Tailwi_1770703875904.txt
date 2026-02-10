@@ -1,0 +1,142 @@
+Upgrade ONLY the UI of my existing FastAPI + Jinja + Tailwind web app.
+
+DO NOT modify:
+- backend logic
+- routes
+- scoring engine
+- report generation
+- database
+- APIs
+- test engine
+
+This is strictly a frontend design upgrade.
+
+-----------------------------------------------------
+
+GLOBAL BRANDING UPDATE:
+
+Add a premium brand header across the landing page.
+
+Brand name: "ScoreQuanta"
+
+Style requirements:
+- Large, elegant typography
+- Modern sans-serif (Inter or similar)
+- Slight letter spacing
+- Semi-bold weight
+- Dark charcoal color (not pure black)
+- Calm, high-intelligence aesthetic
+- No gradients
+- No flashy effects
+
+Place it top-left in the navbar.
+
+On the right side of the navbar add a **Contact** button.
+
+-----------------------------------------------------
+
+CONTACT BUTTON:
+
+Button text:
+"Contact"
+
+Style:
+- Outline button
+- Rounded-lg
+- Medium padding
+- Hover: subtle dark fill
+
+On click:
+Open a mailto link:
+
+mailto:akash@scorequanta.com?subject=ScoreQuanta Inquiry
+
+DO NOT create a contact form.
+Keep it frictionless and lightweight.
+
+-----------------------------------------------------
+
+LANDING PAGE REFINEMENT:
+
+Below ScoreQuanta, add a strong positioning line:
+
+"The Predictive SAT Diagnostic Built for Serious Score Improvement."
+
+Subtext:
+
+"Identify your score range, ceiling, and fastest path to a top percentile — in minutes."
+
+Keep spacing tight and premium.
+
+Add primary CTA button:
+
+"Start Free Diagnostic →"
+
+Large.
+Dark background.
+White text.
+Rounded-lg.
+Slight hover lift.
+
+No bright colors.
+
+-----------------------------------------------------
+
+REPORT INTERPRETATION FLOW (IMPORTANT UX ADDITION):
+
+After a user unlocks their report, add a calm card BELOW the report summary.
+
+Card Style:
+- white background
+- soft shadow
+- rounded-xl
+- generous padding
+
+Title:
+"Want Expert Interpretation?"
+
+Body:
+"Most families benefit from a quick expert review to understand the fastest path to score improvement."
+
+Add TWO options:
+
+Primary Button:
+"Request Personal Review →"
+(Action: opens mailto link to akash@scorequanta.com with subject "Score Review Request")
+
+Secondary Option (minimal):
+Small inline email capture field with button:
+"Get Review via Email"
+
+DO NOT add heavy logic.
+Simply reuse the existing email capture mechanism.
+
+-----------------------------------------------------
+
+DESIGN RULES:
+
+- Premium, calm interface
+- Generous but controlled whitespace
+- No illustrations
+- No gamification
+- No gradients
+- Avoid marketing noise
+- Maintain fast load speed
+- Keep Tailwind utility classes
+- Clean semantic HTML
+
+-----------------------------------------------------
+
+PERFORMANCE:
+
+Do NOT add heavy JavaScript.
+Do NOT introduce new dependencies.
+
+-----------------------------------------------------
+
+DELIVERABLE:
+
+Provide updated Jinja templates only.
+
+Do not break the existing application.
+Do not touch backend code.

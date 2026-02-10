@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAT Math Diagnostic</title>
+    <title>ScoreQuanta - SAT Math Diagnostic</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -89,11 +89,26 @@
 
         .report-screen { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; display: none; }
 
+        .expert-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 36px 32px; margin-top: 40px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .expert-card-title { font-size: 1.15rem; font-weight: 700; color: #111827; margin-bottom: 8px; letter-spacing: -0.01em; }
+        .expert-card-body { font-size: 0.92rem; color: #6b7280; line-height: 1.6; margin-bottom: 24px; max-width: 520px; }
+        .expert-primary-btn { display: inline-block; padding: 14px 36px; background: #111827; color: #fff; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; letter-spacing: 0.01em; }
+        .expert-primary-btn:hover { background: #1f2937; transform: translateY(-1px); }
+        .expert-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #9ca3af; font-size: 0.8rem; }
+        .expert-divider::before, .expert-divider::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
+        .expert-email-row { display: flex; gap: 10px; max-width: 400px; }
+        .expert-email-field { flex: 1; padding: 11px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none; }
+        .expert-email-field:focus { border-color: #111827; }
+        .expert-email-btn { padding: 11px 20px; background: #fff; border: 1.5px solid #374151; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; color: #374151; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .expert-email-btn:hover { background: #1e293b; color: #fff; border-color: #1e293b; }
+
         @media (max-width: 600px) {
             .test-container { padding: 16px; padding-top: 120px; }
             .orientation-tips { flex-direction: column; gap: 6px; }
             .confidence-options { flex-direction: column; }
             .micro-copy { flex-direction: column; gap: 6px; }
+            .expert-card { padding: 28px 20px; }
+            .expert-email-row { flex-direction: column; }
         }
     </style>
 </head>
@@ -116,7 +131,7 @@
 
     <div class="test-container" id="testContainer">
         <div class="orientation-card" id="orientationCard">
-            <div class="orientation-title">SAT Math Intelligence Diagnostic</div>
+            <div class="orientation-title">ScoreQuanta Diagnostic</div>
             <div class="orientation-sub">Measures speed, precision, and decision patterns.</div>
             <div class="orientation-tips">
                 <span class="orientation-tip"><span class="ck">&#10003;</span> No tricks</span>
@@ -156,6 +171,17 @@
 
     <div class="report-screen" id="reportScreen">
         <div id="reportContent"></div>
+
+        <div class="expert-card">
+            <div class="expert-card-title">Want Expert Interpretation?</div>
+            <p class="expert-card-body">Most families benefit from a quick expert review to understand the fastest path to score improvement.</p>
+            <a href="mailto:akash@scorequanta.com?subject=Score Review Request" class="expert-primary-btn">Request Personal Review &rarr;</a>
+            <div class="expert-divider">or</div>
+            <div class="expert-email-row">
+                <input type="email" class="expert-email-field" id="expertEmailInput" placeholder="you@email.com" autocomplete="email">
+                <button class="expert-email-btn" onclick="requestExpertReview()">Get Review via Email</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -423,6 +449,16 @@
                     }
                 }
             }, 2000);
+        }
+
+        function requestExpertReview() {
+            const email = document.getElementById('expertEmailInput').value.trim();
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            window.location.href = 'mailto:akash@scorequanta.com?subject=Score Review Request&body=Please review my ScoreQuanta diagnostic results. My email: ' + encodeURIComponent(email);
+            document.getElementById('expertEmailInput').value = '';
         }
 
         init();
