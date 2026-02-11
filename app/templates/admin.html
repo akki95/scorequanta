@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - SAT Diagnostic</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <style>
         .admin-header {
             display: flex;
@@ -174,7 +177,7 @@
                 {% for q in questions %}
                 <tr>
                     <td>{{ q.id }}</td>
-                    <td class="q-text-cell" title="{{ q.question_text }}">{{ q.question_text }}</td>
+                    <td class="q-text-cell" title="{{ q.question_text }}">{{ q.question_text | safe }}</td>
                     <td><strong>{{ q.correct_answer }}</strong></td>
                     <td>{{ q.concept }}</td>
                     <td>
@@ -198,5 +201,17 @@
         </div>
         {% endif %}
     </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof renderMathInElement === 'function') {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "\\(", right: "\\)", display: false}
+                ]
+            });
+        }
+    });
+    </script>
 </body>
 </html>

@@ -84,6 +84,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 - Design: Premium, calm, analytical - no gamification, no gradients, no bright colors
 
 ## Recent Changes
+- 2026-02-11: KaTeX LaTeX math rendering - Added KaTeX CDN to all templates (test, landing, admin, add/edit question). Live preview in admin question forms. Monospace textarea with LaTeX helper text. Auto-render on dynamic content. `| safe` filter for trusted admin content.
 - 2026-02-10: ScoreQuanta branding - navbar with logo + Contact mailto button, positioning tagline, updated CTA ("Start Free Diagnostic"), expert interpretation card below report with mailto + email capture, page titles updated
 - 2026-02-10: Fixed report generation crash - decision_volatility (string) was used in arithmetic, fallback report now handles all metric types correctly, simplified async report generation
 - 2026-02-09: Complete UI overhaul - landing page (Stripe-inspired hero, CTA, feature cards), test page (progress bar, orientation card, timer reframe, momentum messages, confidence microcopy, Continue button), email capture (value stack card, curiosity headline), report (structured JSON from Gemini, performance dashboard with Chart.js radar, metrics grid, severity chips, benchmark bars, fallback rendering)

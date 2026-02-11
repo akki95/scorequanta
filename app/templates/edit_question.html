@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Question - SAT Diagnostic</title>
+    <title>Edit Question - ScoreQuanta Admin</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        .latex-help { font-size: 0.82rem; color: #6b7280; margin-bottom: 8px; line-height: 1.5; }
+        .latex-help code { background: #f3f4f6; padding: 1px 5px; border-radius: 3px; font-size: 0.8rem; }
+        textarea.latex-input { min-height: 180px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 0.9rem; line-height: 1.6; }
+        .preview-box { background: #fafafa; border: 1px solid #e5e7eb; border-radius: 6px; padding: 16px 20px; margin-top: 8px; min-height: 48px; font-size: 1rem; line-height: 1.7; color: #111827; }
+        .preview-label { font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 10px; margin-bottom: 4px; }
+        input.latex-input-sm { font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 0.9rem; }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -14,27 +25,36 @@
         <form method="POST" action="/admin/edit-question/{{ question.id }}">
             <div class="form-group">
                 <label>Question Text</label>
-                <textarea name="question_text" required>{{ question.question_text }}</textarea>
+                <div class="latex-help">
+                    Supports LaTeX. Use <code>\( ... \)</code> for inline math, <code>$$ ... $$</code> for display equations.
+                </div>
+                <textarea name="question_text" class="latex-input" id="questionText" required>{{ question.question_text }}</textarea>
+                <div class="preview-label">Live Preview</div>
+                <div class="preview-box" id="questionPreview"></div>
             </div>
 
             <div class="form-group">
                 <label>Option A</label>
-                <input type="text" name="option_a" value="{{ question.option_a }}" required>
+                <input type="text" name="option_a" class="latex-input-sm" data-preview="previewA" value="{{ question.option_a }}" required>
+                <div class="preview-box" id="previewA" style="margin-top:4px; min-height:32px; padding:10px 16px;"></div>
             </div>
 
             <div class="form-group">
                 <label>Option B</label>
-                <input type="text" name="option_b" value="{{ question.option_b }}" required>
+                <input type="text" name="option_b" class="latex-input-sm" data-preview="previewB" value="{{ question.option_b }}" required>
+                <div class="preview-box" id="previewB" style="margin-top:4px; min-height:32px; padding:10px 16px;"></div>
             </div>
 
             <div class="form-group">
                 <label>Option C</label>
-                <input type="text" name="option_c" value="{{ question.option_c }}" required>
+                <input type="text" name="option_c" class="latex-input-sm" data-preview="previewC" value="{{ question.option_c }}" required>
+                <div class="preview-box" id="previewC" style="margin-top:4px; min-height:32px; padding:10px 16px;"></div>
             </div>
 
             <div class="form-group">
                 <label>Option D</label>
-                <input type="text" name="option_d" value="{{ question.option_d }}" required>
+                <input type="text" name="option_d" class="latex-input-sm" data-preview="previewD" value="{{ question.option_d }}" required>
+                <div class="preview-box" id="previewD" style="margin-top:4px; min-height:32px; padding:10px 16px;"></div>
             </div>
 
             <div class="form-group">
@@ -79,5 +99,38 @@
             <button type="submit" class="btn-primary" style="margin-top: 10px;">Save Changes</button>
         </form>
     </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const katexDelimiters = [
+            {left: "$$", right: "$$", display: true},
+            {left: "\\(", right: "\\)", display: false}
+        ];
+
+        function updatePreview(sourceEl, targetId) {
+            const target = document.getElementById(targetId);
+            if (!target) return;
+            target.innerHTML = sourceEl.value || '';
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(target, { delimiters: katexDelimiters });
+            }
+        }
+
+        const questionText = document.getElementById('questionText');
+        if (questionText) {
+            questionText.addEventListener('input', function () {
+                updatePreview(this, 'questionPreview');
+            });
+            updatePreview(questionText, 'questionPreview');
+        }
+
+        document.querySelectorAll('input[data-preview]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                updatePreview(this, this.dataset.preview);
+            });
+            updatePreview(input, input.dataset.preview);
+        });
+    });
+    </script>
 </body>
 </html>

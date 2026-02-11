@@ -6,6 +6,9 @@
     <title>ScoreQuanta - SAT Math Diagnostic</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #fafafa; color: #111; -webkit-font-smoothing: antialiased; }
@@ -222,6 +225,17 @@
             showQuestion(0);
         }
 
+        function renderMath(el) {
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(el, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "\\(", right: "\\)", display: false}
+                    ]
+                });
+            }
+        }
+
         function renderQuestions() {
             const wrapper = document.getElementById('questionsWrapper');
             let html = '';
@@ -260,6 +274,7 @@
                 </div>`;
             });
             wrapper.innerHTML = html;
+            renderMath(wrapper);
         }
 
         function setNumeric(qIdx, value) {

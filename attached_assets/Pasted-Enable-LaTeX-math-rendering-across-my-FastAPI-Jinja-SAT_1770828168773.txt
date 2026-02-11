@@ -1,0 +1,94 @@
+Enable LaTeX math rendering across my FastAPI + Jinja SAT app, including:
+
+- Admin question input
+- Question display during tests
+- Answer choices
+- Explanations (future-safe)
+
+Use KaTeX for fast client-side rendering.
+
+DO NOT modify backend logic unnecessarily.
+
+-----------------------------------------------------
+
+STEP 1 — Add KaTeX CDN
+
+Inside the base template <head>, add:
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+-----------------------------------------------------
+
+STEP 2 — Auto Render Script
+
+Before closing </body>, add:
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: "$$", right: "$$", display: true},
+      {left: "\\(", right: "\\)", display: false}
+    ]
+  });
+});
+</script>
+
+-----------------------------------------------------
+
+STEP 3 — Admin Page Instruction
+
+Above the question textarea, add helper text:
+
+"Supports LaTeX.  
+Use \\( ... \\) for inline math  
+Use $$ ... $$ for display equations."
+
+Example placeholder:
+
+"What is the value of \\(x^2 + 5x + 6\\)?"
+
+-----------------------------------------------------
+
+STEP 4 — DO NOT ESCAPE LATEX
+
+In Jinja templates where questions render, use:
+
+{{ question_text | safe }}
+
+Same for options.
+
+IMPORTANT:
+Only do this if the admin is trusted (which it is).
+
+-----------------------------------------------------
+
+STEP 5 — Improve Textarea
+
+Make the admin textarea larger:
+
+- min-height: 180px
+- use a monospace font
+- allow comfortable equation typing
+
+-----------------------------------------------------
+
+STEP 6 — Optional but HIGHLY Recommended
+
+Add a live preview below the textarea.
+
+When admin types LaTeX, show rendered math instantly using KaTeX.
+
+This prevents broken questions entering the database.
+
+-----------------------------------------------------
+
+GOAL:
+
+Admin types LaTeX → database stores it → students see perfectly formatted math.
+
+No images.
+No hacks.
+No formatting disasters.
