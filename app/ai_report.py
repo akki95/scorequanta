@@ -111,14 +111,6 @@ def build_report_html(data: dict, metrics: dict) -> str:
             </div>
         </div>'''
 
-    radar_labels = json.dumps(["Processing Speed", "Precision", "Endurance", "Trap Recognition", "Pacing Control", "Confidence Accuracy"])
-    raw_radar = data.get("radar_scores", [50, 50, 50, 50, 50, 50])
-    try:
-        radar_data_vals = [int(float(str(v))) for v in raw_radar]
-    except (ValueError, TypeError):
-        radar_data_vals = [50, 50, 50, 50, 50, 50]
-    radar_data = json.dumps(radar_data_vals)
-
     return f'''
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -158,8 +150,6 @@ def build_report_html(data: dict, metrics: dict) -> str:
     .friction-label-text {{ font-size: 0.82rem; color: #6b7280; }}
     .friction-desc {{ font-size: 0.88rem; color: #374151; margin-top: 8px; }}
 
-    .radar-section {{ background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 28px; margin-bottom: 28px; text-align: center; }}
-    .radar-canvas {{ max-width: 400px; margin: 0 auto; }}
 
     .suppressor-card {{ background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 12px; }}
     .suppressor-title {{ font-size: 0.95rem; font-weight: 700; color: #111827; margin-bottom: 6px; }}
@@ -220,11 +210,6 @@ def build_report_html(data: dict, metrics: dict) -> str:
         <div class="friction-desc">{friction_desc}</div>
     </div>
 
-    <div class="radar-section">
-        <div class="section-title">Performance Profile</div>
-        <canvas id="radarChart" class="radar-canvas" width="400" height="400"></canvas>
-    </div>
-
     <div class="section-title">Top Score Suppressors</div>
     {suppressor_html}
 
@@ -243,44 +228,6 @@ def build_report_html(data: dict, metrics: dict) -> str:
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script>
-(function() {{
-    const ctx = document.getElementById('radarChart');
-    if (!ctx) return;
-    new Chart(ctx, {{
-        type: 'radar',
-        data: {{
-            labels: {radar_labels},
-            datasets: [{{
-                label: 'Your Performance',
-                data: {radar_data},
-                backgroundColor: 'rgba(17, 24, 39, 0.08)',
-                borderColor: '#111827',
-                borderWidth: 2,
-                pointBackgroundColor: '#111827',
-                pointRadius: 4,
-            }}]
-        }},
-        options: {{
-            responsive: true,
-            scales: {{
-                r: {{
-                    beginAtZero: true,
-                    max: 100,
-                    ticks: {{ stepSize: 25, font: {{ size: 11 }}, color: '#9ca3af' }},
-                    grid: {{ color: '#e5e7eb' }},
-                    angleLines: {{ color: '#e5e7eb' }},
-                    pointLabels: {{ font: {{ size: 12, weight: '500' }}, color: '#374151' }}
-                }}
-            }},
-            plugins: {{
-                legend: {{ display: false }}
-            }}
-        }}
-    }});
-}})();
-</script>
 '''
 
 
