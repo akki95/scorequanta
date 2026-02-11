@@ -92,26 +92,44 @@
 
         .report-screen { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; display: none; }
 
-        .expert-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 36px 32px; margin-top: 40px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-        .expert-card-title { font-size: 1.15rem; font-weight: 700; color: #111827; margin-bottom: 8px; letter-spacing: -0.01em; }
-        .expert-card-body { font-size: 0.92rem; color: #6b7280; line-height: 1.6; margin-bottom: 24px; max-width: 520px; }
-        .expert-primary-btn { display: inline-block; padding: 14px 36px; background: #111827; color: #fff; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; letter-spacing: 0.01em; }
-        .expert-primary-btn:hover { background: #1f2937; transform: translateY(-1px); }
-        .expert-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #9ca3af; font-size: 0.8rem; }
-        .expert-divider::before, .expert-divider::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
-        .expert-email-row { display: flex; gap: 10px; max-width: 400px; }
-        .expert-email-field { flex: 1; padding: 11px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none; }
-        .expert-email-field:focus { border-color: #111827; }
-        .expert-email-btn { padding: 11px 20px; background: #fff; border: 1.5px solid #374151; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; color: #374151; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-        .expert-email-btn:hover { background: #1e293b; color: #fff; border-color: #1e293b; }
+        .sticky-cta-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: #fafafa; border-top: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 0; opacity: 0; transform: translateY(-100%); transition: opacity 0.4s ease, transform 0.4s ease; pointer-events: none; }
+        .sticky-cta-bar.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .sticky-cta-inner { max-width: 960px; margin: 0 auto; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .sticky-scores { display: flex; align-items: center; gap: 0; }
+        .sticky-score-item { padding: 0 16px; font-size: 0.85rem; color: #374151; font-weight: 500; }
+        .sticky-score-item:not(:last-child) { border-right: 1px solid #d1d5db; }
+        .sticky-score-item strong { font-weight: 700; color: #111827; }
+        .sticky-score-item .unlockable-val { color: #059669; font-weight: 700; }
+        .sticky-micro { font-size: 0.72rem; color: #9ca3af; margin-top: 2px; }
+        .sticky-cta-btn { padding: 11px 28px; background: #1e1b4b; color: #fff; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; text-decoration: none; letter-spacing: 0.01em; }
+        .sticky-cta-btn:hover { background: #312e81; transform: translateY(-1px); }
+        .sticky-mobile-text { display: none; }
+        .sticky-desktop-scores { display: flex; align-items: center; }
+
+        .expert-section { margin-top: 48px; }
+        .expert-headline { font-size: 1.6rem; font-weight: 800; color: #0a0a0a; letter-spacing: -0.02em; margin-bottom: 10px; }
+        .expert-tension { font-size: 0.92rem; color: #4b5563; line-height: 1.6; margin-bottom: 28px; max-width: 580px; }
+        .expert-callout { background: #f3f4f6; border-radius: 16px; padding: 32px 28px; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .expert-callout-title { font-size: 1rem; font-weight: 700; color: #111827; margin-bottom: 16px; }
+        .expert-bullet { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; font-size: 0.9rem; color: #374151; line-height: 1.4; }
+        .expert-bullet:last-child { margin-bottom: 0; }
+        .expert-bullet-check { color: #4b5563; font-weight: 700; flex-shrink: 0; }
+        .expert-cta-btn { display: inline-block; padding: 18px 48px; background: #1e1b4b; color: #fff; border: none; border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-decoration: none; letter-spacing: 0.01em; }
+        .expert-cta-btn:hover { background: #312e81; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+        .expert-credibility { font-size: 0.78rem; color: #9ca3af; margin-top: 14px; }
+        .expert-scarcity { font-size: 0.78rem; color: #9ca3af; margin-top: 8px; }
 
         @media (max-width: 600px) {
             .test-container { padding: 16px; padding-top: 120px; }
             .orientation-tips { flex-direction: column; gap: 6px; }
             .confidence-options { flex-direction: column; }
             .micro-copy { flex-direction: column; gap: 6px; }
-            .expert-card { padding: 28px 20px; }
-            .expert-email-row { flex-direction: column; }
+            .expert-section { margin-top: 36px; }
+            .expert-callout { padding: 24px 20px; }
+            .expert-headline { font-size: 1.3rem; }
+            .sticky-desktop-scores { display: none; }
+            .sticky-mobile-text { display: block; font-size: 0.88rem; font-weight: 600; color: #059669; }
+            .sticky-cta-inner { padding: 10px 16px; }
         }
     </style>
 </head>
@@ -172,18 +190,39 @@
         <p class="email-privacy">Your email is used only to deliver your report. No spam.</p>
     </div>
 
+    <div class="sticky-cta-bar" id="stickyCta">
+        <div class="sticky-cta-inner">
+            <div class="sticky-scores">
+                <div class="sticky-desktop-scores">
+                    <div class="sticky-score-item">Predicted: <strong id="stickyPredicted">—</strong></div>
+                    <div class="sticky-score-item">Ceiling: <strong id="stickyCeiling">—</strong></div>
+                    <div class="sticky-score-item"><span class="unlockable-val" id="stickyUnlockable">+—</span> Potential</div>
+                </div>
+                <div class="sticky-mobile-text" id="stickyMobileText">+— points available</div>
+                <div class="sticky-micro" style="padding-left:16px;">Estimated gain: +80–130 points with structured execution.</div>
+            </div>
+            <a href="mailto:akash@scorequanta.com?subject=Score Improvement Strategy Request" class="sticky-cta-btn">Unlock My Score Strategy &rarr;</a>
+        </div>
+    </div>
+
     <div class="report-screen" id="reportScreen">
         <div id="reportContent"></div>
 
-        <div class="expert-card">
-            <div class="expert-card-title">Want Expert Interpretation?</div>
-            <p class="expert-card-body">Most families benefit from a quick expert review to understand the fastest path to score improvement.</p>
-            <a href="mailto:akash@scorequanta.com?subject=Score Review Request" class="expert-primary-btn">Request Personal Review &rarr;</a>
-            <div class="expert-divider">or</div>
-            <div class="expert-email-row">
-                <input type="email" class="expert-email-field" id="expertEmailInput" placeholder="you@email.com" autocomplete="email">
-                <button class="expert-email-btn" onclick="requestExpertReview()">Get Review via Email</button>
+        <div class="expert-section">
+            <h2 class="expert-headline">See How Top Scorers Close This Gap</h2>
+            <p class="expert-tension">Students with a similar performance profile typically leave 120–180 points unrealized without targeted correction.</p>
+
+            <div class="expert-callout">
+                <div class="expert-callout-title">What Happens In Your Precision Review</div>
+                <div class="expert-bullet"><span class="expert-bullet-check">&#10003;</span> Identify the fastest path to +100 points</div>
+                <div class="expert-bullet"><span class="expert-bullet-check">&#10003;</span> Eliminate careless score loss</div>
+                <div class="expert-bullet"><span class="expert-bullet-check">&#10003;</span> Build a 4–6 week acceleration roadmap</div>
+                <div class="expert-bullet"><span class="expert-bullet-check">&#10003;</span> Prioritize highest ROI concepts</div>
             </div>
+
+            <a href="mailto:akash@scorequanta.com?subject=Score Improvement Strategy Request" class="expert-cta-btn">Unlock My Score Improvement Strategy &rarr;</a>
+            <p class="expert-credibility">Used by families targeting 700+ scores.</p>
+            <p class="expert-scarcity">Diagnostic reviews are released in limited weekly slots to maintain depth.</p>
         </div>
     </div>
 
@@ -440,6 +479,31 @@
             document.getElementById('emailGateScreen').style.display = 'none';
             document.getElementById('submittingScreen').style.display = 'none';
             document.getElementById('reportScreen').style.display = 'block';
+
+            const dash = document.querySelector('.report-dash');
+            if (dash) {
+                const predicted = dash.dataset.predicted || '—';
+                const ceiling = dash.dataset.ceiling || '—';
+                const unlockable = dash.dataset.unlockable || '—';
+                document.getElementById('stickyPredicted').textContent = predicted;
+                document.getElementById('stickyCeiling').textContent = ceiling;
+                document.getElementById('stickyUnlockable').textContent = '+' + unlockable;
+                document.getElementById('stickyMobileText').textContent = '+' + unlockable + ' points available';
+            }
+
+            const stickyBar = document.getElementById('stickyCta');
+            const reportScreen = document.getElementById('reportScreen');
+            window.addEventListener('scroll', function () {
+                if (reportScreen.style.display === 'none') return;
+                const scrolled = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPct = docHeight > 0 ? (scrolled / docHeight) : 0;
+                if (scrollPct > 0.25) {
+                    stickyBar.classList.add('visible');
+                } else {
+                    stickyBar.classList.remove('visible');
+                }
+            });
         }
 
         async function pollForReport(score) {
@@ -464,16 +528,6 @@
                     }
                 }
             }, 2000);
-        }
-
-        function requestExpertReview() {
-            const email = document.getElementById('expertEmailInput').value.trim();
-            if (!email || !email.includes('@')) {
-                alert('Please enter a valid email address.');
-                return;
-            }
-            window.location.href = 'mailto:akash@scorequanta.com?subject=Score Review Request&body=Please review my ScoreQuanta diagnostic results. My email: ' + encodeURIComponent(email);
-            document.getElementById('expertEmailInput').value = '';
         }
 
         document.addEventListener("DOMContentLoaded", init);

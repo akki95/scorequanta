@@ -1,0 +1,313 @@
+Upgrade ONLY the SAT diagnostic report page UI to maximize conversion into the expert review / score improvement offer.
+
+DO NOT modify:
+- backend logic
+- scoring engine
+- report calculations
+- routing
+- database
+- test flow
+- email handling
+
+This is strictly a UI + behavioral conversion upgrade.
+
+Maintain the existing premium, calm, high-intelligence design style.
+
+Avoid loud marketing aesthetics.
+
+No bright gradients.
+No aggressive animations.
+No gimmicks.
+
+-----------------------------------------------------
+
+PRIMARY OBJECTIVE:
+
+Create persistent decision tension throughout the report while positioning the expert review as the natural next step.
+
+The report should feel like a performance intelligence system — not a tutoring site.
+
+-----------------------------------------------------
+-----------------------------------------------------
+PART 1 — ADD STICKY PERFORMANCE CTA BAR (EXTREMELY HIGH IMPACT)
+-----------------------------------------------------
+
+Create a slim sticky top bar that appears AFTER the user scrolls ~25% of the page.
+
+Do NOT show it immediately on page load.
+
+Behavior:
+- Smooth fade or subtle slide-in
+- No bounce
+- No pulsing
+- No flashy animation
+
+Height:
+56–64px maximum.
+
+-----------------------------------------------------
+
+DESIGN:
+
+Background: off-white (#FAFAFA or similar)  
+Top border: very subtle gray  
+Soft shadow for separation  
+
+Must look premium and calm.
+
+NOT dark.
+
+Dark is reserved for decision zones only.
+
+-----------------------------------------------------
+
+LEFT SIDE CONTENT (dynamic):
+
+Predicted: {{score_range}}  
+Ceiling: {{score_ceiling}}  
++{{unlockable_points}} Potential  
+
+Use thin vertical dividers between items.
+
+Typography:
+- clean
+- medium weight
+- highly readable
+
+Under this, add micro text:
+
+"Estimated gain: +80–130 points with structured execution."
+
+Muted gray.
+Small but legible.
+
+This increases system authority.
+
+-----------------------------------------------------
+
+RIGHT SIDE CTA BUTTON:
+
+Text:
+
+"Unlock My Score Strategy →"
+
+Button Style:
+- Dark background (deep indigo or near black)
+- White text
+- Rounded-lg
+- Medium padding
+- Slight hover lift
+- No glow
+- No pulse
+
+The button should feel expensive.
+
+-----------------------------------------------------
+
+MOBILE:
+
+Collapse score text into:
+
+"+{{unlockable_points}} points available"
+
+Keep button thumb-friendly.
+
+Do NOT let the bar block report content.
+
+-----------------------------------------------------
+-----------------------------------------------------
+PART 2 — REMOVE CONVERSION FRICTION
+-----------------------------------------------------
+
+Delete the horizontal divider containing "or".
+
+Do NOT present multiple equal actions.
+
+There must be ONE dominant path.
+
+-----------------------------------------------------
+-----------------------------------------------------
+PART 3 — REBUILD THE EXPERT CTA SECTION (CRITICAL)
+-----------------------------------------------------
+
+Replace the entire current expert-review section.
+
+-----------------------------------------------------
+
+NEW HEADLINE:
+
+"See How Top Scorers Close This Gap"
+
+Large.
+Bold.
+High contrast.
+
+This is an insight — not a suggestion.
+
+-----------------------------------------------------
+
+CONTROLLED TENSION LINE (below headline):
+
+"Students with a similar performance profile typically leave 120–180 points unrealized without targeted correction."
+
+Keep tone authoritative.
+Not alarmist.
+
+Max-width for readability.
+
+-----------------------------------------------------
+
+ADD DARK PREMIUM CALLOUT CARD
+
+Create a slightly darker card than the page background.
+
+Rounded-xl  
+Soft shadow  
+Generous padding  
+
+Inside the card:
+
+TITLE:
+
+"What Happens In Your Precision Review"
+
+Bullets:
+
+✔ Identify the fastest path to +100 points  
+✔ Eliminate careless score loss  
+✔ Build a 4–6 week acceleration roadmap  
+✔ Prioritize highest ROI concepts  
+
+Keep bullets tight.
+
+No paragraphs.
+
+Scanning > reading.
+
+-----------------------------------------------------
+
+PRIMARY CTA BUTTON:
+
+Replace all existing buttons with ONE dominant button.
+
+Text:
+
+"Unlock My Score Improvement Strategy →"
+
+Style:
+
+- Large
+- Dark background
+- White text
+- Strong padding
+- Rounded-lg
+- Slight hover lift
+
+Must visually anchor the section.
+
+-----------------------------------------------------
+
+CREDIBILITY MICROCOPY (below button):
+
+"Used by families targeting 700+ scores."
+
+Muted gray.
+Small.
+
+Calm authority.
+
+-----------------------------------------------------
+
+SUBTLE SCARCITY LINE:
+
+"Diagnostic reviews are released in limited weekly slots to maintain depth."
+
+No countdown timers.
+No urgency colors.
+
+Constraint signals value.
+
+-----------------------------------------------------
+-----------------------------------------------------
+PART 4 — ADD OUTCOME MODELING (HIGH AUTHORITY MOVE)
+-----------------------------------------------------
+
+Place this ABOVE the 14-day plan section:
+
+"Students who execute this protocol typically see 80–130 point gains within 4–6 weeks."
+
+No guarantees.
+Just modeled expectation.
+
+This makes the system feel engineered.
+
+-----------------------------------------------------
+-----------------------------------------------------
+PART 5 — REMOVE INTELLIGENCE-KILLING REPETITION
+-----------------------------------------------------
+
+Ensure the executive score panel appears ONLY ONCE at the top.
+
+Delete duplicates if present.
+
+Repetition reduces perceived sophistication.
+
+-----------------------------------------------------
+-----------------------------------------------------
+PART 6 — INTERPRET ALL METRICS
+-----------------------------------------------------
+
+For each key metric, add a performance label:
+
+Elite  
+Above Average  
+Developing  
+Needs Immediate Attention  
+
+Never show raw numbers alone.
+
+Systems interpret.
+Spreadsheets display.
+
+-----------------------------------------------------
+-----------------------------------------------------
+PART 7 — RENAME THE PLAN SECTION
+-----------------------------------------------------
+
+Change:
+
+"Fastest Path to +100"
+
+TO:
+
+"Score Acceleration Protocol"
+
+This should sound engineered — not marketed.
+
+-----------------------------------------------------
+
+FINAL DESIGN RULES:
+
+- Preserve generous whitespace
+- Maintain calm premium spacing
+- Avoid visual clutter
+- No dashboard chaos
+- No excessive colors
+- No gamification
+
+The product should resemble a performance intelligence platform.
+
+Not a tutoring website.
+
+-----------------------------------------------------
+
+DELIVERABLE:
+
+Update ONLY the report page template with:
+
+- Sticky CTA bar
+- Rebuilt expert section
+- Outcome modeling
+- Improved hierarchy
+
+Do not break the existing application.

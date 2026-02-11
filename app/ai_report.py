@@ -38,10 +38,23 @@ def build_report_html(data: dict, metrics: dict) -> str:
             score = 0
         benchmark = m.get("benchmark", "")
         interpretation = m.get("interpretation", "")
+        if score >= 80:
+            perf_label = "Elite"
+            perf_class = "perf-elite"
+        elif score >= 60:
+            perf_label = "Above Average"
+            perf_class = "perf-above"
+        elif score >= 40:
+            perf_label = "Developing"
+            perf_class = "perf-developing"
+        else:
+            perf_label = "Needs Immediate Attention"
+            perf_class = "perf-attention"
         metrics_html += f'''
         <div class="metric-card">
             <div class="metric-name">{name}</div>
             <div class="metric-score">{score}<span class="metric-max">/100</span></div>
+            <span class="perf-label {perf_class}">{perf_label}</span>
             <div class="metric-bench">{benchmark}</div>
             <div class="metric-interp">{interpretation}</div>
         </div>'''
@@ -132,6 +145,12 @@ def build_report_html(data: dict, metrics: dict) -> str:
     .metric-bench {{ font-size: 0.78rem; color: #6b7280; margin-top: 4px; }}
     .metric-interp {{ font-size: 0.82rem; color: #374151; margin-top: 8px; line-height: 1.4; }}
 
+    .perf-label {{ display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 6px; }}
+    .perf-elite {{ background: #ecfdf5; color: #065f46; }}
+    .perf-above {{ background: #eff6ff; color: #1e40af; }}
+    .perf-developing {{ background: #fffbeb; color: #92400e; }}
+    .perf-attention {{ background: #fef2f2; color: #991b1b; }}
+
     .friction-card {{ background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 28px; margin-bottom: 28px; }}
     .friction-bar-track {{ width: 100%; height: 10px; background: #e5e7eb; border-radius: 5px; overflow: hidden; margin: 12px 0 8px; }}
     .friction-bar-fill {{ height: 100%; border-radius: 5px; background: linear-gradient(90deg, #d1d5db, #6b7280, #111827); }}
@@ -163,7 +182,7 @@ def build_report_html(data: dict, metrics: dict) -> str:
     .bench-val {{ font-size: 0.75rem; color: #9ca3af; white-space: nowrap; }}
 </style>
 
-<div class="report-dash">
+<div class="report-dash" data-predicted="{predicted_score}" data-ceiling="{score_ceiling}" data-unlockable="{unlockable}">
     <div class="hero-card">
         <div class="hero-scores">
             <div class="hero-metric">
@@ -209,7 +228,11 @@ def build_report_html(data: dict, metrics: dict) -> str:
     <div class="section-title">Top Score Suppressors</div>
     {suppressor_html}
 
-    <div class="section-title" style="margin-top:28px;">Fastest Path to +100</div>
+    <div class="outcome-model" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:20px 24px;margin:28px 0 12px;font-size:0.9rem;color:#374151;line-height:1.6;font-weight:500;">
+        Students who execute this protocol typically see 80–130 point gains within 4–6 weeks.
+    </div>
+
+    <div class="section-title" style="margin-top:28px;">Score Acceleration Protocol</div>
     <div class="path-section">
         {path_html}
     </div>

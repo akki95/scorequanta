@@ -84,6 +84,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 - Design: Premium, calm, analytical - no gamification, no gradients, no bright colors
 
 ## Recent Changes
+- 2026-02-11: Report page conversion upgrade - Sticky CTA bar (appears after 25% scroll with predicted/ceiling/unlockable scores), rebuilt expert section (single dominant CTA path, callout card with review bullets, credibility + scarcity microcopy), performance labels on metrics (Elite/Above Average/Developing/Needs Immediate Attention), outcome modeling text, renamed plan to "Score Acceleration Protocol"
 - 2026-02-11: KaTeX LaTeX math rendering - Added KaTeX CDN to all templates (test, landing, admin, add/edit question). Live preview in admin question forms. Monospace textarea with LaTeX helper text. Auto-render on dynamic content. `| safe` filter for trusted admin content.
 - 2026-02-10: ScoreQuanta branding - navbar with logo + Contact mailto button, positioning tagline, updated CTA ("Start Free Diagnostic"), expert interpretation card below report with mailto + email capture, page titles updated
 - 2026-02-10: Fixed report generation crash - decision_volatility (string) was used in arithmetic, fallback report now handles all metric types correctly, simplified async report generation
