@@ -71,7 +71,11 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 ```
 
 ## Environment Variables
-- DATABASE_URL: PostgreSQL connection string (auto-set)
+- SUPABASE_DATABASE_URL: Supabase PostgreSQL connection string (secret - full URL or just password)
+- SUPABASE_HOST: Supabase pooler hostname (env var)
+- SUPABASE_PORT: Supabase pooler port (env var, default 6543)
+- SUPABASE_USER: Supabase database user (env var)
+- SUPABASE_DB: Supabase database name (env var, default postgres)
 - AI_INTEGRATIONS_GEMINI_API_KEY: Gemini API key (auto-set via Replit AI Integrations)
 - AI_INTEGRATIONS_GEMINI_BASE_URL: Gemini base URL (auto-set)
 - SESSION_SECRET: Session secret key
